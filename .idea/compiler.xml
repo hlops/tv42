@@ -38,12 +38,20 @@
         <processorPath useClasspath="true" />
         <module name="services" />
       </profile>
+      <profile default="false" name="Annotation profile for web-services" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="web-services" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="core" target="1.8" />
       <module name="services" target="1.8" />
       <module name="tasker" target="1.8" />
       <module name="tv42" target="1.8" />
+      <module name="web-services" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

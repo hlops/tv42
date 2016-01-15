@@ -24,7 +24,7 @@ import com.hlops.tv42.core.services.SourceService;
  * Time: 2:53 PM
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/spring-config.xml" })
+@ContextConfiguration(locations = { "/test-spring-config.xml" })
 public class SourceServiceImplTest extends Assert {
 
     @Autowired

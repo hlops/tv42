@@ -234,7 +234,13 @@ module.exports = function makeWebpackConfig (options) {
       cached: false,
       colors: true,
       chunk: false
-    }
+    },
+    proxy: {
+      '/rest*': {
+        target: 'http://localhost:8081/tv',
+        secure: false,
+      },
+    },
   };
 
   return config;

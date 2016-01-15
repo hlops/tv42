@@ -1,0 +1,5 @@
+{
+	"validateIndentation": "\t",
+	"validateParameterSeparator": ", ",
+	"validateQuoteMarks": "'"
+}

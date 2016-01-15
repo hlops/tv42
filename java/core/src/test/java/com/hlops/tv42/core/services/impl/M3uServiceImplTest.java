@@ -26,7 +26,7 @@ import com.hlops.tv42.core.services.M3uService;
  * Time: 12:50 PM
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/spring-config.xml" })
+@ContextConfiguration(locations = { "/test-spring-config.xml" })
 public class M3uServiceImplTest extends Assert {
 
     @Autowired
@@ -87,12 +87,9 @@ public class M3uServiceImplTest extends Assert {
             m3uService.actualize(m3uChannels);
 
             //noinspection unchecked
-            Collection<M3uChannel> channels = (Collection<M3uChannel>) m3uService.getChannels();
-            M3uChannel[] arr = channels.toArray(new M3uChannel[channels.size()]);
+            Collection<M3uChannel> channels = m3uService.getChannels();
             assertEquals(4, channels.size());
-            channels.stream().forEach(p -> {
-                assertEquals(true, p.isActual());
-            });
+            channels.stream().forEach(p -> assertEquals(true, p.isActual()));
         }
 
         {
@@ -102,18 +99,14 @@ public class M3uServiceImplTest extends Assert {
             m3uService.actualize(m3uChannels);
 
             //noinspection unchecked
-            Collection<M3uChannel> channels = (Collection<M3uChannel>) m3uService.getChannels();
-            M3uChannel[] arr = channels.toArray(new M3uChannel[channels.size()]);
+            Collection<M3uChannel> channels = m3uService.getChannels();
             assertEquals(5, channels.size());
-            channels.stream().filter(p -> p.getSource().equals("test1")).forEach(p -> {
-                assertEquals(true, p.isActual());
-            });
-            channels.stream().filter(p -> p.getSource().equals("test2")).forEach(p -> {
-                assertEquals(p.getName().equals("channel2"), p.isActual());
-            });
-            channels.stream().filter(p -> p.getSource().equals("test3")).forEach(p -> {
-                assertEquals(true, p.isActual());
-            });
+            channels.stream().filter(p -> p.getSource().equals("test1")).forEach(
+                    p -> assertEquals(true, p.isActual()));
+            channels.stream().filter(p -> p.getSource().equals("test2")).forEach(
+                    p -> assertEquals(p.getName().equals("channel2"), p.isActual()));
+            channels.stream().filter(p -> p.getSource().equals("test3")).forEach(
+                    p -> assertEquals(true, p.isActual()));
         }
     }
 }

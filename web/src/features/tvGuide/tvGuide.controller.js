@@ -1,8 +1,9 @@
 'use strict';
 
 export default class TvGuideController {
-    constructor() {
+    constructor(tvService) {
+	    tvService.test();
     }
 }
 
-TvGuideController.$inject = [];
+TvGuideController.$inject = ['tvService'];

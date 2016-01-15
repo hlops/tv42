@@ -7,6 +7,6 @@
 
     <context:component-scan base-package="com.hlops.tv42.core.bean, com.hlops.tv42.core.services"/>
 
-    <context:property-placeholder location="classpath:/core-config.properties"/>
+    <context:property-placeholder location="classpath:/test-core-config.properties"/>
 
 </beans>
