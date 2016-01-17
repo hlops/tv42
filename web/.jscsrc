@@ -1,5 +1,5 @@
 {
-	"validateIndentation": "\t",
-	"validateParameterSeparator": ", ",
-	"validateQuoteMarks": "'"
+  "preset": "google",
+  "maximumLineLength": null,
+  "esnext": true
 }

@@ -2,8 +2,8 @@
 
 export default function routes($routeProvider) {
   $routeProvider
-      .when('/channels', {
-        template: require('./channels.html'),
+      .when('/sources', {
+        template: require('./sources.html'),
         reloadOnSearch: false
       })
 }

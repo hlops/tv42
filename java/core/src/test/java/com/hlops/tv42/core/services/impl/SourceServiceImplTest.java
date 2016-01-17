@@ -5,11 +5,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -60,6 +62,18 @@ public class SourceServiceImplTest extends Assert {
         Source source = new Source("test", Source.ChannelSourceType.m3u, url);
         long lastModified = new File(url.getFile()).lastModified();
         source.setLastModified(lastModified + 1);
+        //todo:
         sourceService.loadIfModified(source);
+    }
+
+    @Test
+    @DirtiesContext
+    public void test1() throws Exception {
+        //todo:
+        Collection<Source> sources = new ArrayList<>();
+        sources.add(new Source("playlist", Source.ChannelSourceType.m3u, getClass().getClassLoader().getResource("playlist.m3u")));
+        sources.add(new Source("прошлонедельный", Source.ChannelSourceType.m3u, getClass().getClassLoader().getResource("playlist.m3u")));
+        sources.add(new Source("xmltv", Source.TvShowSourceType.xmltv, new URL("file://xmltv")));
+        sourceService.update(sources);
     }
 }

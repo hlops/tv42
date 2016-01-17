@@ -1,8 +1,8 @@
 'use strict';
 
 export default class ChannelsController {
-    constructor() {
-    }
+  constructor() {
+  }
 }
 
 ChannelsController.$inject = [];

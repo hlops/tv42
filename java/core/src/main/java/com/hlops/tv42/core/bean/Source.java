@@ -89,5 +89,6 @@ public class Source implements Identifiable {
     }
 
     public interface SourceType {
+        String name();
     }
 }

@@ -9,11 +9,14 @@ import './app.css';
 
 import config from './app.config';
 
-import tvGuide from './features/tvGuide/index';
+import sources from './features/sources/index';
+import tvShow from './features/tvShow/index';
 import channels from './features/channels/index';
 
-angular.module('app', [
-		tvGuide, channels,
-		'ngMaterial'])
-	.config(config)
+import AppController from './app.controller';
+
+angular.module('app',
+    [sources, tvShow, channels, 'ngMaterial'])
+    .controller('AppController', AppController)
+    .config(config)
 ;

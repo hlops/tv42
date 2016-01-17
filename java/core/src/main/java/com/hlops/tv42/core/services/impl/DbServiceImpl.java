@@ -1,12 +1,7 @@
 package com.hlops.tv42.core.services.impl;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
+import com.hlops.tv42.core.bean.Identifiable;
+import com.hlops.tv42.core.services.DbService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -18,8 +13,12 @@ import org.mapdb.Serializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.hlops.tv42.core.bean.Identifiable;
-import com.hlops.tv42.core.services.DbService;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,6 +41,7 @@ public class DbServiceImpl implements DbService {
     private boolean dbDeleteFilesOnClose;
 
     private DB db;
+    private boolean initDefaultValues;
 
     @PostConstruct
     private void init() {
@@ -61,6 +61,10 @@ public class DbServiceImpl implements DbService {
             }
             //noinspection ResultOfMethodCallIgnored
             file.getParentFile().mkdirs();
+
+            if (!file.exists()) {
+                initDefaultValues = true;
+            }
 
             log.debug("init db from file: " + file.getAbsolutePath());
             dbMaker = DBMaker
@@ -82,6 +86,10 @@ public class DbServiceImpl implements DbService {
             db.treeMapCreate(entity.name())
                     .keySerializer(Serializer.STRING)
                     .makeOrGet();
+        }
+
+        if (initDefaultValues) {
+            initDefaultValues();
         }
     }
 
@@ -121,7 +129,11 @@ public class DbServiceImpl implements DbService {
 
     @Override
     public void drop(@NotNull Entity entity) {
-        db.delete(entity.name());
+        db.treeMap(entity.name()).clear();
         db.commit();
+    }
+
+    private void initDefaultValues() {
+
     }
 }

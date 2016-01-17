@@ -115,6 +115,14 @@
                 <version>${spring.version}</version>
             </dependency>
 
+            <!-- json -->
+
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>2.3.1</version>
+            </dependency>
+
             <!-- utils -->
 
             <dependency>

@@ -3,15 +3,18 @@ package com.hlops.tv42.core.services.impl;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.hlops.tv42.core.bean.Source;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -109,4 +112,5 @@ public class M3uServiceImplTest extends Assert {
                     p -> assertEquals(true, p.isActual()));
         }
     }
+
 }

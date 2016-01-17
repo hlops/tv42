@@ -1,0 +1,22 @@
+<div ng-controller="sourcesController as sourcesCtrl">
+    <md-toolbar class="md-hue-3">
+        <div class="md-toolbar-tools">
+            <h2>
+                <span></span>
+            </h2>
+            <span flex></span>
+        </div>
+    </md-toolbar>
+    <md-content layout="column" flex class="md-padding">
+        <md-list-item class="md-2-line" ng-repeat="phone in sourcesCtrl.phones">
+            <md-icon md-svg-icon="communication:phone" ng-if="$index !== 2"
+                     ng-class="{'md-avatar-icon': $index === 1}"></md-icon>
+            <div class="md-list-item-text" ng-class="{'md-offset': $index == 2 }">
+                <h3>{{ phone.number }} </h3>
+
+                <p> {{ phone.type }} </p>
+            </div>
+        </md-list-item>
+        </md-list>
+    </md-content>
+</div>
