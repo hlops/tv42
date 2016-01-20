@@ -1,8 +1,14 @@
 'use strict';
 
-export default class ChannelsController {
-  constructor() {
+import CommonPageController from '../../common/common.page.controller';
+
+const name = 'channels';
+
+export default class ChannelsController extends CommonPageController {
+  constructor($scope) {
+    super($scope, name);
   }
+
 }
 
-ChannelsController.$inject = [];
+ChannelsController.$inject = ['$scope'];

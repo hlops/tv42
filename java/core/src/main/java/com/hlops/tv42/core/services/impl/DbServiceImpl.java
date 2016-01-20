@@ -1,6 +1,10 @@
 package com.hlops.tv42.core.services.impl;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.hlops.tv42.core.bean.Identifiable;
+import com.hlops.tv42.core.bean.M3uChannel;
+import com.hlops.tv42.core.bean.Source;
 import com.hlops.tv42.core.services.DbService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -15,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.io.File;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -89,7 +93,7 @@ public class DbServiceImpl implements DbService {
         }
 
         if (initDefaultValues) {
-            initDefaultValues();
+            loadDefaultValues();
         }
     }
 
@@ -133,7 +137,22 @@ public class DbServiceImpl implements DbService {
         db.commit();
     }
 
-    private void initDefaultValues() {
+    public void loadDefaultValues() {
+        loadDefaultValues(Entity.sources, Source[].class);
+        loadDefaultValues(Entity.m3uChannels, M3uChannel[].class);
+    }
 
+    protected void loadDefaultValues(Entity entity, Class<? extends Identifiable[]> clz) {
+        InputStream resourceStream = getClass().getResourceAsStream("/default." + entity.name() + ".json");
+        if (resourceStream != null) {
+            try (BufferedReader resourceReader = new BufferedReader(new InputStreamReader(resourceStream))) {
+
+                GsonBuilder builder = new GsonBuilder();
+                Gson gson = builder.create();
+                update(entity, gson.fromJson(resourceReader, clz));
+            } catch (IOException e) {
+                log.error("Unable to load default values for " + entity.name(), e);
+            }
+        }
     }
 }

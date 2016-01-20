@@ -1,5 +1,15 @@
 package com.hlops.tv42.core.services.impl;
 
+import com.hlops.tv42.core.bean.Source;
+import com.hlops.tv42.core.services.DbService;
+import com.hlops.tv42.core.services.M3uService;
+import com.hlops.tv42.core.services.SourceService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,17 +19,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.hlops.tv42.core.bean.Source;
-import com.hlops.tv42.core.services.DbService;
-import com.hlops.tv42.core.services.M3uService;
-import com.hlops.tv42.core.services.SourceService;
 
 /**
  * Created by IntelliJ IDEA.
@@ -65,7 +64,8 @@ public class SourceServiceImpl implements SourceService {
                 int responseCode = httpConnection.getResponseCode();
 
                 if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) {
-                    log.info("url not modified");
+                    log.info("source not modified: " + source.getId());
+                    return false;
                 } else if (responseCode == HttpURLConnection.HTTP_OK) {
                     loadSource(source, connection);
                 } else {
@@ -82,19 +82,24 @@ public class SourceServiceImpl implements SourceService {
             if (connection.getLastModified() > source.getLastModified()) {
                 loadSource(source, connection);
             } else {
-                log.info("not modified");
+                log.info("source not modified: " + source.getId());
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
     private void loadSource(@NotNull Source source, @NotNull URLConnection connection) throws IOException {
-        if (source.getType() instanceof Source.ChannelSourceType) {
+        if (source.getType() == Source.SourceType.m3u) {
             m3uService.actualize(
                     m3uService.load(source.getId(), new BufferedReader(new InputStreamReader(connection.getInputStream())))
             );
+        } else {
+            // todo
         }
+        source.setLastModified(System.currentTimeMillis());
+        dbService.update(DbService.Entity.sources, source);
     }
 
 }

@@ -5,10 +5,8 @@ class tvService {
     this.$http = $http;
   }
 
-  test() {
-    this.$http.get('/rest/test').then(function (q) {
-      console.log(q)
-    });
+  getSources() {
+    return this.$http.get('/rest/sources');
   }
 }
 

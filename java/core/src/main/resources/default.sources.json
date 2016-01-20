@@ -1,0 +1,12 @@
+[
+  {
+    "name": "cn.ru",
+    "type": "m3u",
+    "url": "file:playlist.m3u"
+  },
+  {
+    "name": "Программа teleguide.info",
+    "type": "xmltv",
+    "url": "http://www.teleguide.info/download/new3/xmltv.xml.gz"
+  }
+]

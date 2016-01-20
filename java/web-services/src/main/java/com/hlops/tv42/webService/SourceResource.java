@@ -52,4 +52,5 @@ public class SourceResource {
         jsonWriter.endArray();
         jsonWriter.close();
     }
+
 }

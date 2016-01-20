@@ -1,23 +1,22 @@
 package com.hlops.tv42.core.services.impl;
 
-import java.io.File;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-
-import org.junit.After;
+import com.hlops.tv42.core.bean.M3uChannel;
+import com.hlops.tv42.core.bean.Source;
+import com.hlops.tv42.core.services.DbService;
+import com.hlops.tv42.core.services.M3uService;
+import com.hlops.tv42.core.services.SourceService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.hlops.tv42.core.bean.Source;
-import com.hlops.tv42.core.services.DbService;
-import com.hlops.tv42.core.services.SourceService;
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,7 +25,7 @@ import com.hlops.tv42.core.services.SourceService;
  * Time: 2:53 PM
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/test-spring-config.xml" })
+@ContextConfiguration(locations = {"/test-spring-config.xml"})
 public class SourceServiceImplTest extends Assert {
 
     @Autowired
@@ -37,43 +36,54 @@ public class SourceServiceImplTest extends Assert {
 
     @Before
     public void setUp() throws Exception {
+        dbService.drop(DbService.Entity.m3uChannels);
         dbService.drop(DbService.Entity.sources);
     }
+
+    @Autowired
+    private M3uService m3uService;
 
     @Test
     public void testUpdate() throws Exception {
         Collection<Source> sources = new ArrayList<>();
         URL url = getClass().getClassLoader().getResource("playlist.m3u");
         assert (url != null);
-        sources.add(new Source("test", Source.ChannelSourceType.m3u, url));
+        sources.add(new Source("test", Source.SourceType.m3u, url));
         sourceService.update(sources);
 
         assertEquals(1, sourceService.getSources().size());
         Source source = sourceService.getSources().iterator().next();
         assertEquals("test", source.getName());
-        assertEquals(Source.ChannelSourceType.m3u, source.getType());
+        assertEquals(Source.SourceType.m3u, source.getType());
         assertEquals(url, source.getUrl());
     }
 
     @Test
-    public void testUpdateIfModified() throws Exception {
+    public void testUpdatedIfModified() throws Exception {
         URL url = getClass().getClassLoader().getResource("playlist.m3u");
         assert (url != null);
-        Source source = new Source("test", Source.ChannelSourceType.m3u, url);
+        Source source = new Source("test", Source.SourceType.m3u, url);
         long lastModified = new File(url.getFile()).lastModified();
-        source.setLastModified(lastModified + 1);
-        //todo:
-        sourceService.loadIfModified(source);
+        source.setLastModified(lastModified - 1);
+        assertTrue(sourceService.loadIfModified(source));
+        assertTrue(lastModified - 1 < source.getLastModified());
+
+        Collection<M3uChannel> channels = m3uService.getChannels();
+        assertEquals(159, channels.size());
     }
 
     @Test
-    @DirtiesContext
-    public void test1() throws Exception {
-        //todo:
-        Collection<Source> sources = new ArrayList<>();
-        sources.add(new Source("playlist", Source.ChannelSourceType.m3u, getClass().getClassLoader().getResource("playlist.m3u")));
-        sources.add(new Source("прошлонедельный", Source.ChannelSourceType.m3u, getClass().getClassLoader().getResource("playlist.m3u")));
-        sources.add(new Source("xmltv", Source.TvShowSourceType.xmltv, new URL("file://xmltv")));
-        sourceService.update(sources);
+    public void testNoUpdateIfNotModified() throws Exception {
+        URL url = getClass().getClassLoader().getResource("playlist.m3u");
+        assert (url != null);
+        Source source = new Source("test", Source.SourceType.m3u, url);
+        long lastModified = new File(url.getFile()).lastModified();
+        source.setLastModified(lastModified + 1);
+        assertFalse(sourceService.loadIfModified(source));
+        assertEquals(lastModified + 1, source.getLastModified());
+
+        Collection<M3uChannel> channels = m3uService.getChannels();
+        assertEquals(0, channels.size());
     }
+
 }

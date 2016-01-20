@@ -1,8 +1,8 @@
 package com.hlops.tv42.core.bean;
 
-import java.net.URL;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.net.URL;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,6 +16,7 @@ public class Source implements Identifiable {
     private final SourceType type;
     private final URL url;
     private long lastModified = -1;
+
     public Source(@NotNull String name, @NotNull SourceType type, @NotNull URL url) {
         this.name = name;
         this.type = type;
@@ -80,15 +81,8 @@ public class Source implements Identifiable {
         return result;
     }
 
-    public enum ChannelSourceType implements SourceType {
-        m3u
+    public enum SourceType {
+        m3u, xmltv;
     }
 
-    public enum TvShowSourceType implements SourceType {
-        xmltv
-    }
-
-    public interface SourceType {
-        String name();
-    }
 }

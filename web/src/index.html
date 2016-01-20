@@ -19,11 +19,15 @@
 <div layout="row" flex>
     <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-4dp" md-component-id="left"
                 md-is-locked-open="$mdMedia('gt-sm')">
-        <md-button href="/sources">Источники</md-button>
-        <md-button href="/tvShow" class="md-accent">Телепрограмма</md-button>
-        <md-button href="/channels">Каналы</md-button>
-        <md-button href="/groups">Группы</md-button>
-        <md-button href="/links">Связи</md-button>
+        <md-button ng-repeat="item in [
+                ['Источники', 'sources'],
+                ['Телепрограмма', 'tvShow'],
+                ['Каналы', 'channels'],
+                ['Группы', 'groups'],
+                ['Связи', 'links'],
+                ]" ng-class="{'md-accent': appCtrl.isActiveMenuItem(item[1])}" href="/{{item[1]}}">
+            {{item[0]}}
+        </md-button>
         <md-divider></md-divider>
         <md-button>M3U</md-button>
         <md-button>XMLTV</md-button>

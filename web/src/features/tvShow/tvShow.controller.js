@@ -1,9 +1,13 @@
 'use strict';
 
-export default class TvShowController {
-  constructor(tvService) {
-    //tvService.test();
+import CommonPageController from '../../common/common.page.controller';
+
+const name = 'tvShow';
+
+export default class TvShowController extends CommonPageController {
+  constructor($scope, tvService) {
+    super($scope, name);
   }
 }
 
-TvShowController.$inject = ['tvService'];
+TvShowController.$inject = ['$scope', 'tvService'];
