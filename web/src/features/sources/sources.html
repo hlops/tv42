@@ -1,4 +1,16 @@
-<div ng-controller="sourcesController as sourcesCtrl">
+<style>
+    .sources-container {
+        position: relative;
+    }
+
+    .main-fab {
+        position: absolute;
+        right: 34px;
+        bottom: -34px;
+        z-index: 20;
+    }
+</style>
+<div ng-controller="sourcesController as sourcesCtrl" class="sources-container">
     <md-toolbar class="md-hue-3">
         <div class="md-toolbar-tools">
             <h2>
@@ -10,9 +22,7 @@
     <md-content layout="column" flex class="md-padding">
         <md-list>
             <md-list-item class="md-2-line" ng-repeat="source in sourcesCtrl.sources">
-                <md-icon md-svg-icon="communication:phone" ng-if="$index !== 2"
-                         ng-class="{'md-avatar-icon': $index === 1}"></md-icon>
-                <div class="md-list-item-text" ng-class="{'md-offset': $index == 2 }">
+                <div class="md-list-item-text">
                     <h3>{{ source.name }} </h3>
 
                     <p> {{ source.type }} </p>
@@ -20,6 +30,5 @@
             </md-list-item>
         </md-list>
     </md-content>
-    <md-button class="md-fab md-raised" aria-label="Add">+</md-button>
-    <md-button class="md-fab md-button" aria-label="Add">+</md-button>
+    <md-button class="md-fab md-button main-fab" aria-label="Add">+</md-button>
 </div>

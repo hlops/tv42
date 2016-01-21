@@ -28,6 +28,7 @@ public class DbServiceImplTest extends Assert {
 
     @Before
     public void setUp() throws Exception {
+        dbService.drop(DbService.Entity.sources);
         dbService.drop(DbService.Entity.m3uChannels);
     }
 
