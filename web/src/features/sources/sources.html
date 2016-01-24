@@ -14,7 +14,7 @@
         </div>
     </md-toolbar>
 
-    <md-content layout="column" layout-fill flex>
+    <md-content layout="column" class="full-heigth-2">
         <md-list>
             <md-list-item class="md-2-line md-clickable" md-ink-ripple
                           ng-repeat="source in sourcesCtrl.model.sources"
@@ -29,8 +29,7 @@
         </md-list>
     </md-content>
 
-    <md-sidenav flex layout="column" class="md-sidenav-right md-whiteframe-z2"
-                md-component-id="right">
+    <md-sidenav flex layout="column" class="md-sidenav-right md-whiteframe-z2" md-is-open="sourcesCtrl.model.rightPanelVisible">
         <md-toolbar class="md-hue-3" layout="row">
             <h2 class="md-toolbar-tools" ng-if="sourcesCtrl.model.editSource.type">Редактировать источник</h2>
 

@@ -6,12 +6,32 @@ const name = 'sources';
 
 var $mdSidenav;
 export default class SourcesController extends CommonPageController {
-  constructor($scope, tvService, $mdSidenav) {
+  constructor($scope, tvService, $location) {
     super($scope, name);
+    this.$scope = $scope;
     this.tvService = tvService;
-    this.$mdSidenav = $mdSidenav;
-    this.model = {};
+    this.$location = $location;
+
+    this.model = {
+      rightPanelVisible: false,
+      editSource: undefined
+    };
+    this.init();
+  }
+
+  init() {
     var vm = this;
+    this.$scope.$watch(() => this.model.rightPanelVisible, function(newValue, oldValue) {
+      if (newValue != oldValue) {
+/*
+        var action = 'new';
+        if (vm.model.editSource.id) {
+          action = 'edit';
+        }
+        vm.$location.search(action, newValue ? vm.model.editSource.id : null);
+*/
+      }
+    });
 
     this.readSources();
     this.tvService.getSourceTypes().then(
@@ -34,7 +54,7 @@ export default class SourcesController extends CommonPageController {
 
   edit(source) {
     this.model.editSource = angular.extend({}, source);
-    this.$mdSidenav('right').toggle();
+    this.model.rightPanelVisible = true;
   }
 
   save() {
@@ -42,15 +62,13 @@ export default class SourcesController extends CommonPageController {
     this.tvService.saveSource(this.model.editSource).then(function() {
       vm.readSources();
     });
-    this.model.editSource = undefined;
-    this.$mdSidenav('right').toggle();
-
+    this.close();
   }
 
   close() {
     this.model.editSource = undefined;
-    this.$mdSidenav('right').toggle();
+    this.model.rightPanelVisible = false;
   }
 }
 
-SourcesController.$inject = ['$scope', 'tvService', '$mdSidenav'];
+SourcesController.$inject = ['$scope', 'tvService', '$location'];

@@ -1,6 +1,7 @@
 body {
     font-family: 'Forum', cursive;
 }
+
 .md-toolbar-tools h1 {
     font-size: inherit;
     font-weight: inherit;
@@ -11,4 +12,10 @@ md-sidenav.md-locked-open {
     width: 180px !important;
     min-width: 180px !important;
     max-width: 180px !important;
+}
+
+.full-heigth-2 {
+    height: -moz-calc(100vh - 2 * 64px);
+    height: -webkit-calc(100vh - 2 * 64px);
+    height: calc(100vh - 2 * 64px);
 }
