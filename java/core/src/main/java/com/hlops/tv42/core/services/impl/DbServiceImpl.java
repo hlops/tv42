@@ -22,6 +22,7 @@ import javax.annotation.PreDestroy;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -132,12 +133,24 @@ public class DbServiceImpl implements DbService {
     }
 
     @Override
+    public void delete(@NotNull Entity entity, @NotNull List<? extends Identifiable> list) {
+        Map<String, Identifiable> map = get(entity);
+        for (Identifiable value : list) {
+            if (value != null) {
+                map.remove(value.getId());
+            }
+        }
+        db.commit();
+    }
+
+    @Override
     public void drop(@NotNull Entity entity) {
         db.treeMap(entity.name()).clear();
         db.commit();
     }
 
     public void loadDefaultValues() {
+        // todo
         loadDefaultValues(Entity.sources, Source[].class);
         loadDefaultValues(Entity.m3uChannels, M3uChannel[].class);
     }

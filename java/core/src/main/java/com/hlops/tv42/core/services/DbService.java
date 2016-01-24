@@ -1,11 +1,11 @@
 package com.hlops.tv42.core.services;
 
-import java.util.Collection;
-import java.util.Map;
-
+import com.hlops.tv42.core.bean.Identifiable;
 import org.jetbrains.annotations.NotNull;
 
-import com.hlops.tv42.core.bean.Identifiable;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,6 +22,8 @@ public interface DbService {
     void update(@NotNull Entity entity, Identifiable... values);
 
     void drop(@NotNull Entity entity);
+
+    void delete(@NotNull Entity entity, @NotNull List<? extends Identifiable> sources);
 
     enum Entity {
         sources, m3uChannels, tvShow, mapping

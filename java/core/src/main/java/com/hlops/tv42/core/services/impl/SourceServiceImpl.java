@@ -19,6 +19,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,6 +39,11 @@ public class SourceServiceImpl implements SourceService {
     M3uService m3uService;
 
     @Override
+    public Source getSource(String id) {
+        return (Source) dbService.get(DbService.Entity.sources).get(id);
+    }
+
+    @Override
     public Collection<Source> getSources() {
         //noinspection unchecked
         return (Collection<Source>) dbService.get(DbService.Entity.sources).values();
@@ -45,8 +51,12 @@ public class SourceServiceImpl implements SourceService {
 
     @Override
     public void update(@NotNull Collection<Source> sources) {
-
         dbService.update(DbService.Entity.sources, sources);
+    }
+
+    @Override
+    public void delete(List<Source> sources) {
+        dbService.delete(DbService.Entity.sources, sources);
     }
 
     @Override

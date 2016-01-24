@@ -2,6 +2,7 @@ package com.hlops.tv42.core.services;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -15,9 +16,14 @@ import com.hlops.tv42.core.bean.Source;
  */
 public interface SourceService {
 
+    Source getSource(String id);
+
     Collection<Source> getSources();
 
     void update(@NotNull Collection<Source> sources);
 
+    void delete(List<Source> sources);
+
     boolean loadIfModified(@NotNull Source source) throws IOException;
+
 }

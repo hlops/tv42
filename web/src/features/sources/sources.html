@@ -1,34 +1,72 @@
-<style>
-    .sources-container {
-        position: relative;
-    }
+<div ng-controller="sourcesController as sourcesCtrl">
 
-    .main-fab {
-        position: absolute;
-        right: 34px;
-        bottom: -34px;
-        z-index: 20;
-    }
-</style>
-<div ng-controller="sourcesController as sourcesCtrl" class="sources-container">
+    <md-button class="md-fab md-button md-fab-bottom-right" aria-label="Add"
+               ng-click="sourcesCtrl.add()">
+        <md-icon md-font-set="material-icons">add</md-icon>
+    </md-button>
+
     <md-toolbar class="md-hue-3">
         <div class="md-toolbar-tools">
             <h2>
-                <span></span>
+                <span>Источники</span>
             </h2>
             <span flex></span>
         </div>
     </md-toolbar>
-    <md-content layout="column" flex class="md-padding">
+
+    <md-content layout="column" layout-fill flex>
         <md-list>
-            <md-list-item class="md-2-line" ng-repeat="source in sourcesCtrl.sources">
+            <md-list-item class="md-2-line md-clickable" md-ink-ripple
+                          ng-repeat="source in sourcesCtrl.model.sources"
+                          ng-click="sourcesCtrl.edit(source)">
                 <div class="md-list-item-text">
                     <h3>{{ source.name }} </h3>
 
                     <p> {{ source.type }} </p>
                 </div>
+                <md-divider></md-divider>
             </md-list-item>
         </md-list>
     </md-content>
-    <md-button class="md-fab md-button main-fab" aria-label="Add">+</md-button>
+
+    <md-sidenav flex layout="column" class="md-sidenav-right md-whiteframe-z2"
+                md-component-id="right">
+        <md-toolbar class="md-hue-3" layout="row">
+            <h2 class="md-toolbar-tools" ng-if="sourcesCtrl.model.editSource.type">Редактировать источник</h2>
+
+            <h2 class="md-toolbar-tools" ng-if="!sourcesCtrl.model.editSource.type">Новый источник</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" aria-label="Закрыть" ng-click="sourcesCtrl.close()">
+                <md-icon class="material-icons">&#xE5CD;</md-icon>
+            </md-button>
+        </md-toolbar>
+        <form name="sourceForm">
+            <md-content layout="column" layout-padding>
+                <md-input-container>
+                    <label for="form-source-name">Имя</label>
+                    <input type="text" id="form-source-name" ng-model="sourcesCtrl.model.editSource.name"
+                           ng-required="true">
+                </md-input-container>
+                <md-input-container>
+                    <label>Тип</label>
+                    <md-select type="text" id="form-source-type" ng-model="sourcesCtrl.model.editSource.type"
+                               ng-required="true">
+                        <md-option ng-repeat="type in sourcesCtrl.model.sourceTypes" value="{{type}}">
+                            {{type}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container>
+                    <label for="form-source-url">Url</label>
+                    <input type="text" id="form-source-url" ng-model="sourcesCtrl.model.editSource.url"
+                           ng-required="true">
+                </md-input-container>
+                <md-button class="md-raised md-primary"
+                           ng-click="sourcesCtrl.save()"
+                           ng-disabled="sourceForm.$invalid">
+                    Сохранить
+                </md-button>
+            </md-content>
+        </form>
+    </md-sidenav>
 </div>

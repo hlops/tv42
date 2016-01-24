@@ -8,6 +8,14 @@ class tvService {
   getSources() {
     return this.$http.get('/rest/sources');
   }
+
+  getSourceTypes() {
+    return this.$http.get('/rest/sources/types');
+  }
+
+  saveSource(source) {
+    return this.$http.post('/rest/sources', source);
+  }
 }
 
 tvService.$inject = ['$http'];
