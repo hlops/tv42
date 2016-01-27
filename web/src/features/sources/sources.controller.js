@@ -13,8 +13,7 @@ export default class SourcesController extends CommonPageController {
     this.model = {
       sources: [],
       rightPanelVisible: false,
-      editSource: undefined,
-      hasSelected: false
+      editSource: undefined
     };
     this.init($scope);
   }
@@ -32,10 +31,6 @@ export default class SourcesController extends CommonPageController {
      }
      });
      */
-    $scope.$watch(() => this.model.sources, function() {
-      vm.model.hasSelected = vm.hasSelected();
-    }, true);
-
     this.readSources();
     this.tvService.getSourceTypes().then(
         function(res) {
@@ -72,29 +67,6 @@ export default class SourcesController extends CommonPageController {
     this.model.editSource = undefined;
     this.model.rightPanelVisible = false;
   }
-
-  hasSelected() {
-    var result = false;
-    if (this.model.sources) {
-      this.model.sources.forEach(function(source) {
-        if (source.selected) {
-          result = true;
-        }
-      })
-    }
-    return result;
-  }
-
-  selectAll() {
-    var hasSelected = this.hasSelected();
-    console.log(hasSelected)
-    if (this.model.sources) {
-      this.model.sources.forEach(function(source) {
-        source.selected = !hasSelected;
-      })
-    }
-  }
-
 }
 
 SourcesController.$inject = ['$scope', 'tvService', '$location'];

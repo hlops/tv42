@@ -2,6 +2,12 @@ body, input {
     font-family: 'Forum', cursive;
 }
 
+html {
+    max-width: 100vw;
+    max-height: 100vh;
+    overflow: hidden;
+}
+
 .md-toolbar-tools h1 {
     font-size: inherit;
     font-weight: inherit;
@@ -14,8 +20,23 @@ md-sidenav.md-locked-open {
     max-width: 180px !important;
 }
 
+.full-height {
+    height: -moz-calc(100vh - 64px);
+    height: -webkit-calc(100vh - 64px);
+    height: calc(100vh - 64px);
+    overflow: hidden;
+}
+
 .full-height-2 {
     height: -moz-calc(100vh - 2 * 64px);
     height: -webkit-calc(100vh - 2 * 64px);
     height: calc(100vh - 2 * 64px);
+    overflow: hidden;
+}
+
+.md-toolbar-tools input[model-type="search"] {
+    border: none;
+    box-shadow: none;
+    outline: none;
+    padding-left: 12px;
 }
