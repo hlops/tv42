@@ -1,97 +1,75 @@
-<div ng-controller="sourcesController as sourcesCtrl">
+<md-button class="md-fab md-button md-mini md-primary md-accent" ng-click="sourcesCtrl.add()"
+           tv-move-to-parent="#place-for-fab">
+    <md-icon>add</md-icon>
+    <md-tooltip md-direction="right">Новый источник</md-tooltip>
+</md-button>
 
-    <md-button class="md-fab md-button md-fab-bottom-right" ng-click="sourcesCtrl.add()">
-        <md-icon md-font-set="material-icons">add</md-icon>
-        <md-tooltip md-direction="left">Создать новый источник</md-tooltip>
-    </md-button>
+<md-list>
+    <md-subheader class="md-no-sticky">Источники</md-subheader>
+    <md-list-item class="md-2-line md-clickable"
+                  md-ink-ripple
+                  ng-repeat="source in sourcesCtrl.model.sources | filter:appCtrl.model.isSearch ? appCtrl.model.search:''"
+                  ng-click="sourcesCtrl.edit(source)">
+        <image ng-src="{{source.img}}"
+               class="md-avatar"></image>
+        <div class="md-list-item-text" flex layout="column">
+            <h3>{{ source.name }} </h3>
 
-    <div layout="column" class="full-height">
-        <md-toolbar md-scroll-shrink class="md-hue-3">
-            <div class="md-toolbar-tools">
-                <h1>
-                    <span>Источники</span>
-                </h1>
-                <span flex
-                      ng-if="!sourcesCtrl.model.isSearch"></span>
-                <md-button class="md-icon-button"
-                           ng-click="sourcesCtrl.model.isSearch=true">
-                    <md-icon class="material-icons">search</md-icon>
+            <p> {{ source.type }} </p>
+        </div>
+        <div class="md-list-item-text">
+            <p>вчера</p>
+
+            <p>
+                <md-button class="md-icon-button md-secondary" ng-click="sourcesCtrl.start(source)">
+                    <md-icon class="material-icons">play_circle_outline</md-icon>
+                    <md-tooltip md-direction="left">Выполнить</md-tooltip>
                 </md-button>
-                <div class="md-whiteframe-1dp" flex ng-if="sourcesCtrl.model.isSearch">
-                    <div layout="row">
-                        <input placeholder="поиск" flex
-                               autofocus="autofocus" model-type="search"
-                               ng-model="sourcesCtrl.model.search"/>
-                        <md-button class="md-icon-button" ng-click="sourcesCtrl.model.isSearch=false">
-                            <md-icon class="material-icons">close</md-icon>
-                        </md-button>
-                    </div>
-                </div>
-            </div>
+            </p>
+        </div>
+        <md-divider></md-divider>
+    </md-list-item>
+</md-list>
+
+<md-sidenav class="md-sidenav-right md-whiteframe-z2" md-is-open="sourcesCtrl.model.rightPanelVisible">
+    <div layout="column">
+        <md-toolbar class="md-hue-3" layout="row">
+            <md-button class="md-button" ng-click="sourcesCtrl.close()">
+                <md-icon class="material-icons">arrow_back</md-icon>
+            </md-button>
+            <h2 class="md-toolbar-tools" ng-if="sourcesCtrl.model.editSource.type">Редактировать источник</h2>
+
+            <h2 class="md-toolbar-tools" ng-if="!sourcesCtrl.model.editSource.type">Новый источник</h2>
+            <span flex></span>
         </md-toolbar>
+        <form name="sourceForm">
 
-        <md-content flex>
-            <md-list>
-                <md-list-item class="md-2-line md-clickable" md-ink-ripple
-                              ng-repeat="source in sourcesCtrl.model.sources"
-                              ng-click="sourcesCtrl.edit(source)">
-                    <div class="md-list-item-text">
-                        <h3>{{ source.name }} </h3>
-
-                        <p> {{ source.type }} </p>
-                    </div>
-                    <div class="md-list-item-text">
-                        <p>вчера</p>
-                    </div>
-                    <md-button class="md-icon-button md-secondary" ng-click="sourcesCtrl.start(source)">
-                        <md-icon class="material-icons">play_circle_outline</md-icon>
-                        <md-tooltip md-direction="left">Выполнить</md-tooltip>
-                    </md-button>
-                    <md-divider></md-divider>
-                </md-list-item>
-            </md-list>
-        </md-content>
-    </div>
-
-    <md-sidenav flex layout="column" class="md-sidenav-right md-whiteframe-z2"
-                md-is-open="sourcesCtrl.model.rightPanelVisible">
-        <div layout="column">
-            <md-toolbar class="md-hue-3" layout="row">
-                <md-button class="md-button" ng-click="sourcesCtrl.close()">
-                    <md-icon class="material-icons">arrow_back</md-icon>
+            <md-content layout="column" layout-padding>
+                <md-input-container>
+                    <label for="form-source-name">Имя</label>
+                    <input type="text" id="form-source-name" ng-model="sourcesCtrl.model.editSource.name"
+                           ng-required="true">
+                </md-input-container>
+                <md-input-container>
+                    <label>Тип</label>
+                    <md-select type="text" id="form-source-type" ng-model="sourcesCtrl.model.editSource.type"
+                               ng-required="true">
+                        <md-option ng-repeat="type in sourcesCtrl.model.sourceTypes" value="{{type}}">
+                            {{type}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container>
+                    <label for="form-source-url">Url</label>
+                    <input type="text" id="form-source-url" ng-model="sourcesCtrl.model.editSource.url"
+                           ng-required="true">
+                </md-input-container>
+                <md-button class="md-raised md-primary"
+                           ng-click="sourcesCtrl.save()"
+                           ng-disabled="sourceForm.$invalid">
+                    Сохранить
                 </md-button>
-                <h2 class="md-toolbar-tools" ng-if="sourcesCtrl.model.editSource.type">Редактировать источник</h2>
-
-                <h2 class="md-toolbar-tools" ng-if="!sourcesCtrl.model.editSource.type">Новый источник</h2>
-                <span flex></span>
-            </md-toolbar>
-            <form name="sourceForm">
-                <md-content layout="column" layout-padding>
-                    <md-input-container>
-                        <label for="form-source-name">Имя</label>
-                        <input type="text" id="form-source-name" ng-model="sourcesCtrl.model.editSource.name"
-                               ng-required="true">
-                    </md-input-container>
-                    <md-input-container>
-                        <label>Тип</label>
-                        <md-select type="text" id="form-source-type" ng-model="sourcesCtrl.model.editSource.type"
-                                   ng-required="true">
-                            <md-option ng-repeat="type in sourcesCtrl.model.sourceTypes" value="{{type}}">
-                                {{type}}
-                            </md-option>
-                        </md-select>
-                    </md-input-container>
-                    <md-input-container>
-                        <label for="form-source-url">Url</label>
-                        <input type="text" id="form-source-url" ng-model="sourcesCtrl.model.editSource.url"
-                               ng-required="true">
-                    </md-input-container>
-                    <md-button class="md-raised md-primary"
-                               ng-click="sourcesCtrl.save()"
-                               ng-disabled="sourceForm.$invalid">
-                        Сохранить
-                    </md-button>
-                </md-content>
-            </form>
-    </md-sidenav>
-</div>
+            </md-content>
+        </form>
+    </div>
+</md-sidenav>

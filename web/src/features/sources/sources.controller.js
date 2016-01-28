@@ -3,6 +3,8 @@
 import CommonPageController from '../../common/common.page.controller';
 
 const name = 'sources';
+const imgM3u = require('../../assets/images/tv.png');
+const imgXmltv = require('../../assets/images/show.jpg');
 
 export default class SourcesController extends CommonPageController {
   constructor($scope, tvService, $location) {
@@ -43,6 +45,15 @@ export default class SourcesController extends CommonPageController {
     this.tvService.getSources().then(
         function(res) {
           vm.model.sources = res.data;
+          if (vm.model.sources) {
+            vm.model.sources.forEach(function(source) {
+              if (source.type === 'm3u') {
+                source.img = imgM3u;
+              } else if (source.type === 'xmltv') {
+                source.img = imgXmltv;
+              }
+            })
+          }
         });
   }
 

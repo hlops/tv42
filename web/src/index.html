@@ -11,15 +11,6 @@
 
 <body layout="column" ng-app="app" ng-controller="AppController as appCtrl">
 
-<md-toolbar layout="row">
-    <div class="md-toolbar-tools">
-        <md-button class="md-icon-button" hide-gt-sm ng-click="appCtrl.toggleSidenav('left')">
-            <md-icon md-font-set="material-icons">menu</md-icon>
-        </md-button>
-        <h1>Телепрограмма</h1>
-    </div>
-</md-toolbar>
-
 <div layout="row">
     <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-4dp"
                 md-component-id="left" md-is-locked-open="$mdMedia('gt-sm')">
@@ -30,9 +21,9 @@
                 ['Группы', 'groups'],
                 ['Связи', 'links'],
                 ]" ng-class="{'md-accent': appCtrl.isActiveMenuItem(item[1])}"
-                   href="/{{item[1]}}"
+                   ng-href="/{{item[1]}}"
                    ng-click="appCtrl.toggleSidenav('left')"
-                >
+        >
             {{item[0]}}
         </md-button>
         <md-divider></md-divider>
@@ -40,10 +31,37 @@
         <md-button>XMLTV</md-button>
     </md-sidenav>
 
-    <md-content layout="column" layout-fill>
-        <div ng-view></div>
-    </md-content>
+    <div layout="column" class="full-height" layout-fill>
+        <md-toolbar layout="row" md-scroll-shrink>
+            <div class="md-toolbar-tools">
+                <md-button class="md-icon-button" hide-gt-sm ng-click="appCtrl.toggleSidenav('left')">
+                    <md-icon md-font-set="material-icons">menu</md-icon>
+                </md-button>
+                <h1 ng-class="{'hide show-gt-sm': appCtrl.model.isSearch}">
+                    <span>Телепрограмма</span>
+                    <span></span>
+                </h1>
+                <span flex ng-if="!appCtrl.model.isSearch"></span>
+                <md-button class="md-icon-button" ng-click="appCtrl.model.isSearch=!appCtrl.model.isSearch">
+                    <md-icon class="material-icons">search</md-icon>
+                </md-button>
+                <div class="md-whiteframe-1dp" flex ng-if="appCtrl.model.isSearch">
+                    <div layout="row">
+                        <input placeholder="поиск" flex
+                               autofocus="autofocus" model-type="search"
+                               ng-model="appCtrl.model.search"/>
+                        <md-button class="md-icon-button" ng-click="appCtrl.model.isSearch=false; appCtrl.model.search=''">
+                            <md-icon class="material-icons">close</md-icon>
+                        </md-button>
+                    </div>
+                </div>
+                <tv-placeholder id="place-for-fab"/>
+            </div>
+        </md-toolbar>
+        <md-content flex>
+            <div ng-view layout-fill></div>
+        </md-content>
+    </div>
 </div>
-
 </body>
 </html>

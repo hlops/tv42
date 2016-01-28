@@ -21,17 +21,13 @@ md-sidenav.md-locked-open {
 }
 
 .full-height {
-    height: -moz-calc(100vh - 64px);
-    height: -webkit-calc(100vh - 64px);
-    height: calc(100vh - 64px);
+    width: 100vw;
+    height: calc(100vh - 8px);
     overflow: hidden;
 }
 
-.full-height-2 {
-    height: -moz-calc(100vh - 2 * 64px);
-    height: -webkit-calc(100vh - 2 * 64px);
-    height: calc(100vh - 2 * 64px);
-    overflow: hidden;
+.full-height-1 {
+    height: calc(100vh - 64px);
 }
 
 .md-toolbar-tools input[model-type="search"] {
@@ -39,4 +35,10 @@ md-sidenav.md-locked-open {
     box-shadow: none;
     outline: none;
     padding-left: 12px;
+}
+
+.md-fab {
+    position: fixed;
+    left: 8px;
+    top: 42px;
 }
