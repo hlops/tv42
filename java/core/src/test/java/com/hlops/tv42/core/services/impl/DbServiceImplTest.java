@@ -43,12 +43,12 @@ public class DbServiceImplTest extends Assert {
         assertNotNull(source1);
         assertEquals("source1", source1.getName());
         assertEquals(Source.SourceType.m3u, source1.getType());
-        assertEquals("file:playlist.m3u", source1.getUrl().toString());
+        assertEquals("file:/playlist.m3u", source1.getUrl().toString());
 
         Source source2 = (Source) map.get("source2");
         assertNotNull(source2);
         assertEquals("source2", source2.getName());
         assertEquals(Source.SourceType.xmltv, source2.getType());
-        assertEquals("file:tvShow.zip", source2.getUrl().toString());
+        assertEquals("file:/tvShow.zip", source2.getUrl().toString());
     }
 }

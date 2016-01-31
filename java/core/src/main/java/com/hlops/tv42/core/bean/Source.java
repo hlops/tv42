@@ -49,7 +49,7 @@ public class Source implements Identifiable {
     @NotNull
     @Override
     public String getId() {
-        return url.toString();
+        return name;
     }
 
     @SuppressWarnings("unchecked")

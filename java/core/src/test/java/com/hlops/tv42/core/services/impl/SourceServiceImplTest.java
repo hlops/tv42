@@ -60,8 +60,7 @@ public class SourceServiceImplTest extends Assert {
 
     @Test
     public void testUpdatedIfModified() throws Exception {
-        URL url = getClass().getClassLoader().getResource("playlist.m3u");
-        assert (url != null);
+        URL url = new URL("file:/playlist.m3u");
         Source source = new Source("test", Source.SourceType.m3u, url);
         long lastModified = new File(url.getFile()).lastModified();
         source.setLastModified(lastModified - 1);
@@ -74,10 +73,10 @@ public class SourceServiceImplTest extends Assert {
 
     @Test
     public void testNoUpdateIfNotModified() throws Exception {
-        URL url = getClass().getClassLoader().getResource("playlist.m3u");
-        assert (url != null);
+        URL url = new URL("file:/playlist.m3u");
         Source source = new Source("test", Source.SourceType.m3u, url);
-        long lastModified = new File(url.getFile()).lastModified();
+        //noinspection ConstantConditions
+        long lastModified = new File(getClass().getClassLoader().getResource("playlist.m3u").getFile()).lastModified();
         source.setLastModified(lastModified + 1);
         assertFalse(sourceService.loadIfModified(source));
         assertEquals(lastModified + 1, source.getLastModified());

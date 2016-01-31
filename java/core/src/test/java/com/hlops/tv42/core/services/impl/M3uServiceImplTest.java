@@ -1,26 +1,22 @@
 package com.hlops.tv42.core.services.impl;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import com.hlops.tv42.core.bean.Source;
+import com.hlops.tv42.core.bean.M3uChannel;
+import com.hlops.tv42.core.services.DbService;
+import com.hlops.tv42.core.services.M3uService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.hlops.tv42.core.bean.M3uChannel;
-import com.hlops.tv42.core.services.DbService;
-import com.hlops.tv42.core.services.M3uService;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,7 +25,7 @@ import com.hlops.tv42.core.services.M3uService;
  * Time: 12:50 PM
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/test-spring-config.xml" })
+@ContextConfiguration(locations = {"/test-spring-config.xml"})
 public class M3uServiceImplTest extends Assert {
 
     @Autowired

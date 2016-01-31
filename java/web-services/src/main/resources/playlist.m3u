@@ -1,0 +1,16 @@
+#EXTM3U url-tvg="http://www.cn.ru/data/tv/schedule.zip" m3uautoload=1 cache=500 deinterlace=1 aspect-ratio=4:3 crop=690x550+10+10 reportstat=http://iptv.cn.ru/iptv-stat/post.php reportlog=http://clr.novotelecom.ru/iptv/log.php
+
+#EXTINF:-1 tvg-name=2 aspect-ratio=4:3 group-title="Эфир", Первый
+udp://@239.1.15.1:1234
+#EXTINF:-1 tvg-name=8 aspect-ratio=4:3, Россия 1
+udp://@239.1.15.2:1234
+#EXTINF:-1 tvg-name=12 aspect-ratio=4:3, НТВ
+udp://@239.1.15.4:1234
+#EXTINF:-1 tvg-name=46 aspect-ratio=4:3, Пятый
+udp://@239.1.10.3:1234
+#EXTINF:-1 tvg-name=23 aspect-ratio=4:3, РЕН-ТВ
+udp://@239.1.15.5:1234
+#EXTINF:-1 tvg-name=10 aspect-ratio=4:3, СТС
+udp://@239.1.15.6:1234
+#EXTINF:-1 tvg-name=6 aspect-ratio=4:3, ТНТ
+udp://@239.1.15.7:1234

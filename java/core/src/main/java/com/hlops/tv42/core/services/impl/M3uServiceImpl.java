@@ -1,5 +1,13 @@
 package com.hlops.tv42.core.services.impl;
 
+import com.hlops.tv42.core.bean.M3uChannel;
+import com.hlops.tv42.core.services.DbService;
+import com.hlops.tv42.core.services.M3uService;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,15 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.hlops.tv42.core.bean.M3uChannel;
-import com.hlops.tv42.core.services.DbService;
-import com.hlops.tv42.core.services.M3uService;
 
 /**
  * Created by IntelliJ IDEA.

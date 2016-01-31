@@ -2,11 +2,11 @@
   {
     "name": "source1",
     "type": "m3u",
-    "url": "file:playlist.m3u"
+    "url": "file:/playlist.m3u"
   },
   {
     "name": "source2",
     "type": "xmltv",
-    "url": "file:tvShow.zip"
+    "url": "file:/tvShow.zip"
   }
 ]

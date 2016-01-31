@@ -4,11 +4,13 @@ import com.hlops.tv42.core.bean.Source;
 import com.hlops.tv42.core.services.DbService;
 import com.hlops.tv42.core.services.M3uService;
 import com.hlops.tv42.core.services.SourceService;
+import com.hlops.tv42.core.services.XmltvService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.net.www.protocol.file.FileURLConnection;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,11 +34,15 @@ public class SourceServiceImpl implements SourceService {
 
     private static final DateFormat HTTP_DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
     private static Logger log = LogManager.getLogger(SourceServiceImpl.class);
+
     @Autowired
     DbService dbService;
 
     @Autowired
     M3uService m3uService;
+
+    @Autowired
+    XmltvService xmltvService;
 
     @Override
     public Source getSource(String id) {
@@ -60,14 +66,23 @@ public class SourceServiceImpl implements SourceService {
     }
 
     @Override
+    public boolean load(Source source) throws IOException {
+        return loadIfModified(source, 0);
+    }
+
+    @Override
     public boolean loadIfModified(@NotNull Source source) throws IOException {
+        return loadIfModified(source, source.getLastModified());
+    }
+
+    public boolean loadIfModified(@NotNull Source source, long lastModified) throws IOException {
         URLConnection connection = source.getUrl().openConnection();
-        connection.setIfModifiedSince(source.getLastModified());
+        connection.setIfModifiedSince(lastModified);
 
         if (connection instanceof HttpURLConnection) {
             connection.setConnectTimeout(5000);
             connection.setReadTimeout(30000);
-            connection.setRequestProperty("If-Modified-Since", HTTP_DATE_FORMAT.format(new Date(source.getLastModified())));
+            connection.setRequestProperty("If-Modified-Since", HTTP_DATE_FORMAT.format(new Date(lastModified)));
 
             HttpURLConnection httpConnection = (HttpURLConnection) connection;
             try {
@@ -86,10 +101,14 @@ public class SourceServiceImpl implements SourceService {
             }
 
         } else {
+            if (connection instanceof FileURLConnection) {
+                connection = getClass().getResource(connection.getURL().getFile()).openConnection();
+            }
             connection.setConnectTimeout(1000);
             connection.setReadTimeout(3000);
+            connection.connect();
 
-            if (connection.getLastModified() > source.getLastModified()) {
+            if (connection.getLastModified() >= lastModified) {
                 loadSource(source, connection);
             } else {
                 log.info("source not modified: " + source.getId());
@@ -105,8 +124,13 @@ public class SourceServiceImpl implements SourceService {
             m3uService.actualize(
                     m3uService.load(source.getId(), new BufferedReader(new InputStreamReader(connection.getInputStream())))
             );
+        } else if (source.getType() == Source.SourceType.xmltv) {
+            xmltvService.actualize(
+                    xmltvService.load(source.getId(), new BufferedReader(new InputStreamReader(connection.getInputStream())))
+            );
         } else {
-            // todo
+            log.warn("Not supported source type: " + source.getType());
+            return;
         }
         source.setLastModified(System.currentTimeMillis());
         dbService.update(DbService.Entity.sources, source);

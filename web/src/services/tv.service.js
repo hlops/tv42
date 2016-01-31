@@ -16,6 +16,14 @@ class tvService {
   saveSource(source) {
     return this.$http.post('/rest/sources', source);
   }
+
+  executeSource(sourceId) {
+    return this.$http.put('/rest/sources/action', JSON.stringify(sourceId));
+  }
+
+  getChannels() {
+    return this.$http.get('/rest/channels');
+  }
 }
 
 tvService.$inject = ['$http'];

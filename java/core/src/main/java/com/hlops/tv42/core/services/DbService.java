@@ -26,6 +26,6 @@ public interface DbService {
     void delete(@NotNull Entity entity, @NotNull List<? extends Identifiable> sources);
 
     enum Entity {
-        sources, m3uChannels, tvShow, mapping
+        sources, m3uChannels, tvShowChannels, tvShowItems, mapping
     }
 }

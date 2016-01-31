@@ -1,13 +1,12 @@
 package com.hlops.tv42.core.services;
 
+import com.hlops.tv42.core.bean.M3uChannel;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
-
-import com.hlops.tv42.core.bean.M3uChannel;
 
 /**
  * Created by IntelliJ IDEA.

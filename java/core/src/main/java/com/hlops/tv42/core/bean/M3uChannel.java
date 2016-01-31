@@ -1,9 +1,9 @@
 package com.hlops.tv42.core.bean;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,6 +20,7 @@ public class M3uChannel implements Identifiable {
     private boolean actual = true;
     private String group;
     private String tvgName;
+
     public M3uChannel(@NotNull String source, @NotNull String name) {
         this.source = source;
         this.name = name;

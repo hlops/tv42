@@ -1,8 +1,13 @@
 [
   {
+    "name": "local",
+    "type": "m3u",
+    "url": "file:/playlist.m3u"
+  },
+  {
     "name": "cn.ru",
     "type": "m3u",
-    "url": "file:playlist.m3u"
+    "url": "http://www.cn.ru/data/tv/playlist.m3u"
   },
   {
     "name": "Программа teleguide.info",

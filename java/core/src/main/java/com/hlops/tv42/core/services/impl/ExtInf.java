@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * Date: 7/31/14
  * Time: 2:22 PM
  */
-public class ExtInf implements Serializable {
+class ExtInf implements Serializable {
 
     private final static Pattern attributePattern = Pattern.compile("(([A-z][A-z0-9\\-_\\:]*)=(\".*?\"|'.*?'|\\S*)\\s*)");
     private final static Pattern timeShiftPattern = Pattern.compile("\\#EXTINF\\:([0-9\\-]+)\\s+(.*),\\s*(.*)");

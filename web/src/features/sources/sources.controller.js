@@ -17,23 +17,13 @@ export default class SourcesController extends CommonPageController {
       rightPanelVisible: false,
       editSource: undefined
     };
+
     this.init($scope);
   }
 
   init($scope) {
-    var vm = this;
-    /*
-     $scope.$watch(() => this.model.rightPanelVisible, function(newValue, oldValue) {
-     if (newValue != oldValue) {
-     var action = 'new';
-     if (vm.model.editSource.id) {
-     action = 'edit';
-     }
-     vm.$location.search(action, newValue ? vm.model.editSource.id : null);
-     }
-     });
-     */
     this.readSources();
+    var vm = this;
     this.tvService.getSourceTypes().then(
         function(res) {
           vm.model.sourceTypes = res.data;
@@ -75,8 +65,12 @@ export default class SourcesController extends CommonPageController {
   }
 
   close() {
-    this.model.editSource = undefined;
     this.model.rightPanelVisible = false;
+    this.model.editSource = undefined;
+  }
+
+  execute(source) {
+    this.tvService.executeSource(source.id);
   }
 }
 

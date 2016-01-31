@@ -21,7 +21,7 @@
             <p>вчера</p>
 
             <p>
-                <md-button class="md-icon-button md-secondary" ng-click="sourcesCtrl.start(source)">
+                <md-button class="md-icon-button md-secondary" ng-click="sourcesCtrl.execute(source)">
                     <md-icon class="material-icons">play_circle_outline</md-icon>
                     <md-tooltip md-direction="left">Выполнить</md-tooltip>
                 </md-button>
@@ -31,7 +31,7 @@
     </md-list-item>
 </md-list>
 
-<md-sidenav class="md-sidenav-right md-whiteframe-z2" md-is-open="sourcesCtrl.model.rightPanelVisible">
+<md-sidenav class="md-sidenav-right md-whiteframe-z2" md-is-open="sourcesCtrl.model.rightPanelVisible" tv-move-to-parent="#place-for-sidenav">
     <div layout="column">
         <md-toolbar class="md-hue-3" layout="row">
             <md-button class="md-button" ng-click="sourcesCtrl.close()">

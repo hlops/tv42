@@ -33,6 +33,11 @@ public class SourceResource {
     @Autowired
     private SourceService sourceService;
 
+    private Source createSource(@NotNull SourceVO sourceVO) throws MalformedURLException {
+        return new Source(
+                sourceVO.getName(), Source.SourceType.valueOf(sourceVO.getType()), new URL(sourceVO.getUrl()));
+    }
+
     @RequestMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
     @ResponseBody
     public void list(Writer responseWriter) throws IOException {
@@ -40,10 +45,8 @@ public class SourceResource {
         Gson gson = gsonBuilder.create();
         JsonWriter jsonWriter = new JsonWriter(responseWriter);
         jsonWriter.beginArray();
-        for (int i = 0; i < 10; i++) {
-            for (Source source : sourceService.getSources()) {
-                gson.toJson(new SourceVO(source), SourceVO.class, jsonWriter);
-            }
+        for (Source source : sourceService.getSources()) {
+            gson.toJson(new SourceVO(source), SourceVO.class, jsonWriter);
         }
         jsonWriter.endArray();
         jsonWriter.close();
@@ -58,6 +61,12 @@ public class SourceResource {
         sourceService.update(Collections.singletonList(createSource(sourceVO)));
     }
 
+    @RequestMapping(value = "/action", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.PUT)
+    @ResponseBody
+    public void execute(@RequestBody String id) throws IOException {
+        sourceService.load(sourceService.getSource(id));
+    }
+
     @RequestMapping(value = "/types", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
     @ResponseBody
     public void listTypes(Writer responseWriter) throws IOException {
@@ -69,11 +78,6 @@ public class SourceResource {
         }
         jsonWriter.endArray();
         jsonWriter.close();
-    }
-
-    private Source createSource(@NotNull SourceVO sourceVO) throws MalformedURLException {
-        return new Source(
-                sourceVO.getName(), Source.SourceType.valueOf(sourceVO.getType()), new URL(sourceVO.getUrl()));
     }
 
 }

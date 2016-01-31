@@ -84,6 +84,7 @@ public class DbServiceImpl implements DbService {
         }
 
         db = dbMaker
+                .asyncWriteEnable()
                 .closeOnJvmShutdown()
                 .make();
 
@@ -116,7 +117,10 @@ public class DbServiceImpl implements DbService {
         Map<String, Identifiable> map = get(entity);
         for (Identifiable value : values) {
             try {
-                if (!value.equals(map.get(value.getId()))) {
+                Identifiable oldValue = map.get(value.getId());
+                if (oldValue == null) {
+                    map.put(value.getId(), value);
+                } else if (!value.equals(oldValue)) {
                     map.put(value.getId(), value.clone());
                 }
             } catch (CloneNotSupportedException e) {

@@ -1,12 +1,11 @@
 package com.hlops.tv42.core.services;
 
+import com.hlops.tv42.core.bean.Source;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
-
-import com.hlops.tv42.core.bean.Source;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,6 +22,8 @@ public interface SourceService {
     void update(@NotNull Collection<Source> sources);
 
     void delete(List<Source> sources);
+
+    boolean load(Source source) throws IOException;
 
     boolean loadIfModified(@NotNull Source source) throws IOException;
 
