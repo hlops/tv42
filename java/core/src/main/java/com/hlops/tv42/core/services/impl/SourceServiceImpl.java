@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sun.net.www.protocol.file.FileURLConnection;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.text.DateFormat;
@@ -22,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -125,8 +124,15 @@ public class SourceServiceImpl implements SourceService {
                     m3uService.load(source.getId(), new BufferedReader(new InputStreamReader(connection.getInputStream())))
             );
         } else if (source.getType() == Source.SourceType.xmltv) {
+            PushbackInputStream pushbackInputStream = new PushbackInputStream(connection.getInputStream(), 2);
+            InputStream stream;
+            if (isGZipStream(pushbackInputStream)) {
+                stream = new GZIPInputStream(pushbackInputStream);
+            } else {
+                stream = pushbackInputStream;
+            }
             xmltvService.actualize(
-                    xmltvService.load(source.getId(), new BufferedReader(new InputStreamReader(connection.getInputStream())))
+                    xmltvService.load(source.getId(), new InputStreamReader(stream))
             );
         } else {
             log.warn("Not supported source type: " + source.getType());
@@ -134,6 +140,14 @@ public class SourceServiceImpl implements SourceService {
         }
         source.setLastModified(System.currentTimeMillis());
         dbService.update(DbService.Entity.sources, source);
+    }
+
+    private boolean isGZipStream(PushbackInputStream pushbackInputStream) throws IOException {
+        //GZIPInputStream.GZIP_MAGIC;
+        byte[] signature = new byte[2];
+        assert (pushbackInputStream.read(signature) == 2);
+        pushbackInputStream.unread(signature);
+        return (signature[0] == (byte) 0x1f && signature[1] == (byte) 0x8b);
     }
 
 }
