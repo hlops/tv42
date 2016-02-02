@@ -19,11 +19,16 @@ import javax.xml.stream.*;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PushbackInputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Created by tom on 1/31/16.
@@ -35,7 +40,7 @@ public class XmltvServiceImpl implements XmltvService {
 
     @Autowired
     DbService dbService;
-    private static final long MAX_AGE = 1000 * 60 * 60 * 24 * 7;
+    private static final long MAX_AGE = 1000 * 60 * 60 * 24 * 3;
 
     @Override
     public Collection<TvShowItem> getItems() {
@@ -65,12 +70,27 @@ public class XmltvServiceImpl implements XmltvService {
         dbService.update(DbService.Entity.tvShowItems, xmltvPack.getItems().stream().filter(item -> item.getStart() >= minTime).collect(Collectors.toList()));
     }
 
+    private boolean isGZipStream(PushbackInputStream pushbackInputStream) throws IOException {
+        byte[] signature = new byte[4];
+        int read = pushbackInputStream.read(signature, 0, 2);
+        assert (read == 2);
+        pushbackInputStream.unread(signature, 0, read);
+        return GZIPInputStream.GZIP_MAGIC == ByteBuffer.wrap(signature).order(ByteOrder.LITTLE_ENDIAN).getInt();
+    }
+
     @Override
-    public XmltvPack load(@NotNull String source, @NotNull Reader reader) throws IOException {
+    public XmltvPack load(@NotNull String source, @NotNull InputStream originalStream) throws IOException {
+        PushbackInputStream pushbackInputStream = new PushbackInputStream(originalStream, 2);
+        InputStream stream;
+        if (isGZipStream(pushbackInputStream)) {
+            stream = new GZIPInputStream(pushbackInputStream);
+        } else {
+            stream = pushbackInputStream;
+        }
         XmltvPack result = new XmltvPack();
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
         try {
-            XMLStreamReader xmlReader = inputFactory.createXMLStreamReader(reader);
+            XMLStreamReader xmlReader = inputFactory.createXMLStreamReader(new InputStreamReader(stream, "UTF-8"));
             try {
                 XMLEventReader eventReader = inputFactory.createXMLEventReader(xmlReader);
 

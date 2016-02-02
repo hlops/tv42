@@ -2,9 +2,12 @@ package com.hlops.tv42.core.services.impl;
 
 import com.hlops.tv42.core.bean.M3uChannel;
 import com.hlops.tv42.core.bean.Source;
+import com.hlops.tv42.core.bean.TvShowChannel;
+import com.hlops.tv42.core.bean.TvShowItem;
 import com.hlops.tv42.core.services.DbService;
 import com.hlops.tv42.core.services.M3uService;
 import com.hlops.tv42.core.services.SourceService;
+import com.hlops.tv42.core.services.XmltvService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,14 +37,17 @@ public class SourceServiceImplTest extends Assert {
     @Autowired
     private SourceService sourceService;
 
+    @Autowired
+    private M3uService m3uService;
+
+    @Autowired
+    private XmltvService xmltvService;
+
     @Before
     public void setUp() throws Exception {
         dbService.drop(DbService.Entity.m3uChannels);
         dbService.drop(DbService.Entity.sources);
     }
-
-    @Autowired
-    private M3uService m3uService;
 
     @Test
     public void testUpdate() throws Exception {
@@ -83,6 +89,29 @@ public class SourceServiceImplTest extends Assert {
 
         Collection<M3uChannel> channels = m3uService.getChannels();
         assertEquals(0, channels.size());
+    }
+
+    @Test
+    public void testLoadMp3() throws Exception {
+        URL url = new URL("file:/playlist.m3u");
+        Source source = new Source("test", Source.SourceType.m3u, url);
+        assertTrue(sourceService.load(source));
+
+        Collection<M3uChannel> channels = m3uService.getChannels();
+        assertEquals(159, channels.size());
+    }
+
+    @Test
+    public void testLoadXml() throws Exception {
+        URL url = new URL("file:/xmltv1.xml.gz");
+        Source source = new Source("test", Source.SourceType.xmltv, url);
+        assertTrue(sourceService.load(source));
+
+        Collection<TvShowChannel> channels = xmltvService.getChannels();
+        assertEquals(110, channels.size());
+
+        Collection<TvShowItem> items = xmltvService.getItems();
+        assertEquals(0, items.size());
     }
 
 }

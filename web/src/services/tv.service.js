@@ -24,6 +24,14 @@ class tvService {
   getChannels() {
     return this.$http.get('/rest/channels');
   }
+
+  getLinks() {
+    return this.$http.get('/rest/links');
+  }
+
+  getGroups() {
+    return this.$http.get('/rest/groups');
+  }
 }
 
 tvService.$inject = ['$http'];

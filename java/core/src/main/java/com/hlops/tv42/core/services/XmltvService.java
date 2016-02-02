@@ -5,7 +5,7 @@ import com.hlops.tv42.core.bean.TvShowItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -34,6 +34,6 @@ public interface XmltvService {
 
     void actualize(@NotNull XmltvPack xmltvPack);
 
-    XmltvPack load(@NotNull String source, @NotNull Reader reader) throws IOException;
+    XmltvPack load(@NotNull String source, @NotNull InputStream stream) throws IOException;
 
 }

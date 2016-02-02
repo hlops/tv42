@@ -13,11 +13,13 @@ import config from './app.config';
 import sources from './features/sources/index';
 import tvShow from './features/tvShow/index';
 import channels from './features/channels/index';
+import groups from './features/groups/index';
+import links from './features/links/index';
 
 import AppController from './app.controller';
 
 angular.module('app',
-    [sources, tvShow, channels, 'ngMaterial'])
+    [sources, tvShow, channels, groups, links, 'ngMaterial'])
     .controller('AppController', AppController)
     .directive('tvMoveToParent', tvMoveToParent)
     .config(config)
