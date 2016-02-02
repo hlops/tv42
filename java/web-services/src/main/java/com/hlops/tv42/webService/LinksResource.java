@@ -60,6 +60,7 @@ public class LinksResource {
             if (name.contains(" тв")) {
                 showChannels.put(name.replaceAll("\\s+тв", ""), tvShowChannel.getId());
             }
+            showChannels.put(name.replaceAll("\\s", "-"), tvShowChannel.getId());
         }
 
         for (M3uChannel channel : m3uService.getChannels()) {
