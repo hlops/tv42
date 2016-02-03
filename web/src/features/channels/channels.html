@@ -1,13 +1,20 @@
+<md-button class="md-fab md-button md-primary md-accent md-fab-bottom-right" ng-click="channelsCtrl.add()"
+           tv-move-to-parent="#place-for-list-fab">
+    <md-icon>filter</md-icon>
+    <md-tooltip md-direction="left">Фильтр</md-tooltip>
+</md-button>
+
 <md-list>
-    <md-subheader class="md-no-sticky">Каналы</md-subheader>
+    <md-subheader class="md-no-sticky">Каналы ({{channels.length}})</md-subheader>
     <md-list-item class="md-2-line md-clickable"
                   md-ink-ripple
-                  ng-repeat="channel in channelsCtrl.model.channels | filter:appCtrl.model.isSearch ? appCtrl.model.search:''"
-            >
+                  ng-repeat="channel in channels = (channelsCtrl.model.channels | filter:appCtrl.model.isSearch ? appCtrl.model.search:'')"
+    >
         <div class="md-list-item-text" flex layout="column">
             <h3>{{ channel.name }} </h3>
 
             <p> {{ channel.group }} </p>
+
             <p> {{ channel.sourceName }} </p>
         </div>
         <md-divider></md-divider>

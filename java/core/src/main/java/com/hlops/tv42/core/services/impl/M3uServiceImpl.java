@@ -1,7 +1,9 @@
 package com.hlops.tv42.core.services.impl;
 
 import com.hlops.tv42.core.bean.M3uChannel;
+import com.hlops.tv42.core.bean.M3uGroup;
 import com.hlops.tv42.core.services.DbService;
+import com.hlops.tv42.core.services.LinkService;
 import com.hlops.tv42.core.services.M3uService;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -10,10 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -28,10 +27,19 @@ public class M3uServiceImpl implements M3uService {
     @Autowired
     DbService dbService;
 
+    @Autowired
+    LinkService linkService;
+
     @Override
     public Collection<M3uChannel> getChannels() {
         //noinspection unchecked
         return (Collection<M3uChannel>) dbService.get(DbService.Entity.m3uChannels).values();
+    }
+
+    @Override
+    public Collection<M3uGroup> getGroups() {
+        //noinspection unchecked
+        return (Collection<M3uGroup>) dbService.get(DbService.Entity.m3uGroups).values();
     }
 
     @Override
@@ -42,7 +50,28 @@ public class M3uServiceImpl implements M3uService {
         Set<M3uChannel> sourceChannels = allChannels.stream().filter(p -> sources.contains(p.getSource())).collect(Collectors.toSet());
         sourceChannels.forEach(p -> p.setActual(false));
         sourceChannels.addAll(channels);
+
+        actualizeGroups(channels);
+        actualizeLinks(channels);
         dbService.update(DbService.Entity.m3uChannels, sourceChannels);
+    }
+
+    private void actualizeGroups(@NotNull Collection<M3uChannel> channels) {
+        for (M3uChannel channel : channels) {
+            String groupName = channel.getGroup();
+            //noinspection unchecked
+            Map<String, M3uGroup> stringMap = (Map<String, M3uGroup>) dbService.get(DbService.Entity.m3uGroups);
+            stringMap.computeIfAbsent(groupName, p -> new M3uGroup(groupName));
+        }
+    }
+
+    private void actualizeLinks(@NotNull Collection<M3uChannel> channels) {
+        // todo: set direct link with source
+/*
+        for (M3uChannel channel: channels) {
+
+        }
+*/
     }
 
     @Override

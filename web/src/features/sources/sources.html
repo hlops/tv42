@@ -1,14 +1,14 @@
 <md-button class="md-fab md-button md-mini md-primary md-accent" ng-click="sourcesCtrl.add()"
-           tv-move-to-parent="#place-for-fab">
+           tv-move-to-parent="#place-for-header-fab">
     <md-icon>add</md-icon>
     <md-tooltip md-direction="right">Новый источник</md-tooltip>
 </md-button>
 
 <md-list>
-    <md-subheader class="md-no-sticky">Источники</md-subheader>
+    <md-subheader class="md-no-sticky">Источники ({{sources.length}})</md-subheader>
     <md-list-item class="md-2-line md-clickable"
                   md-ink-ripple
-                  ng-repeat="source in sourcesCtrl.model.sources | filter:appCtrl.model.isSearch ? appCtrl.model.search:''"
+                  ng-repeat="source in sources = (sourcesCtrl.model.sources | filter:appCtrl.model.isSearch ? appCtrl.model.search:'')"
                   ng-click="sourcesCtrl.edit(source)">
         <image ng-src="{{source.img}}"
                class="md-avatar"></image>
@@ -31,7 +31,8 @@
     </md-list-item>
 </md-list>
 
-<md-sidenav class="md-sidenav-right md-whiteframe-z2" md-is-open="sourcesCtrl.model.rightPanelVisible" tv-move-to-parent="#place-for-sidenav">
+<md-sidenav class="md-sidenav-right md-whiteframe-z2" md-is-open="sourcesCtrl.model.rightPanelVisible"
+            tv-move-to-parent="#place-for-sidenav">
     <div layout="column">
         <md-toolbar class="md-hue-3" layout="row">
             <md-button class="md-button" ng-click="sourcesCtrl.close()">

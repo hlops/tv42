@@ -9,7 +9,7 @@ public class Link implements Identifiable {
 
     private final String m3uChannel;
     private final String tvShowChannel;
-    private Byte timeshift;
+    private Short timeshift;
 
     public Link(@NotNull String m3uChannel, @NotNull String tvShowChannel) {
         this.m3uChannel = m3uChannel;
@@ -53,12 +53,12 @@ public class Link implements Identifiable {
         return result;
     }
 
-    public Byte getTimeshift() {
+    public Short getTimeshift() {
 
         return timeshift;
     }
 
-    public void setTimeshift(Byte timeshift) {
+    public void setTimeshift(Short timeshift) {
         this.timeshift = timeshift;
     }
 

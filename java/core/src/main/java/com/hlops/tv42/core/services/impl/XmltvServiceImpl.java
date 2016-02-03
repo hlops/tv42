@@ -11,6 +11,7 @@ import com.sun.xml.internal.stream.events.StartElementEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -168,4 +169,30 @@ public class XmltvServiceImpl implements XmltvService {
     private long parseTime(Attribute attr) throws ParseException {
         return TimeFormatter.parse(attr.getValue());
     }
+
+    @Override
+    @Nullable
+    public TvShowChannel findByName(@NotNull String name) {
+        for (TvShowChannel channel : getChannels()) {
+            String channelName = channel.getName().toLowerCase().trim();
+
+            if (name.equalsIgnoreCase(channelName)) {
+                return channel;
+            }
+
+            if (name.equalsIgnoreCase(channelName.replaceAll("\\s+канал", ""))) {
+                return channel;
+            }
+
+            if (name.equalsIgnoreCase(channelName.replaceAll("\\s+тв", ""))) {
+                return channel;
+            }
+
+            if (name.replaceAll("[\\s-]", "").equalsIgnoreCase(channelName.replaceAll("[\\s-]", ""))) {
+                return channel;
+            }
+        }
+        return null;
+    }
+
 }

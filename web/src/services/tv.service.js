@@ -32,6 +32,10 @@ class tvService {
   getGroups() {
     return this.$http.get('/rest/groups');
   }
+
+  getTvShow() {
+    return this.$http.get('/rest/tvShow');
+  }
 }
 
 tvService.$inject = ['$http'];

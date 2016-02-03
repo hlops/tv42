@@ -1,14 +1,11 @@
 <md-list>
-    <md-subheader class="md-no-sticky">Каналы</md-subheader>
+    <md-subheader class="md-no-sticky">Группы ({{groups.length}})</md-subheader>
     <md-list-item class="md-2-line md-clickable"
                   md-ink-ripple
-                  ng-repeat="group in groupsCtrl.model.groups | filter:appCtrl.model.isSearch ? appCtrl.model.search:''"
-            >
+                  ng-repeat="group in groups = (groupsCtrl.model.groups | filter:appCtrl.model.isSearch ? appCtrl.model.search:'')"
+    >
         <div class="md-list-item-text" flex layout="column">
-            <h3>{{ group.name }} </h3>
-
-            <p> {{ group.group }} </p>
-            <p> {{ group.sourceName }} </p>
+            <h3>{{ group }} </h3>
         </div>
         <md-divider></md-divider>
     </md-list-item>

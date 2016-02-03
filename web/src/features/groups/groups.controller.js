@@ -18,7 +18,6 @@ export default class GroupsController extends CommonPageController {
 
   init($scope) {
     this.readGroups();
-    var vm = this;
   }
 
   readGroups() {

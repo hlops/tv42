@@ -1,14 +1,16 @@
 <md-list>
-    <md-subheader class="md-no-sticky">Связи</md-subheader>
+    <md-subheader class="md-no-sticky">Связи ({{links.length}})</md-subheader>
     <md-list-item class="md-2-line md-clickable"
                   md-ink-ripple
-                  ng-repeat="link in linksCtrl.model.links | filter:appCtrl.model.isSearch ? appCtrl.model.search:''"
-            >
+                  ng-repeat="link in links = (linksCtrl.model.links | filter:appCtrl.model.isSearch ? appCtrl.model.search:'')"
+    >
         <div class="md-list-item-text" flex layout="column">
             <p>{{$index+1}}</p>
-            <h3>{{ link.name }} </h3>
 
-            <p> {{ link.group }} </p>
+            <h3>{{ link.channel }} </h3>
+
+            <p> {{ link.tvShow }} </p>
+
             <p> {{ link.showChannel }} </p>
         </div>
         <md-divider></md-divider>

@@ -1,6 +1,7 @@
 package com.hlops.tv42.core.services;
 
 import com.hlops.tv42.core.bean.M3uChannel;
+import com.hlops.tv42.core.bean.M3uGroup;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -17,6 +18,8 @@ import java.util.List;
 public interface M3uService {
 
     Collection<M3uChannel> getChannels();
+
+    Collection<M3uGroup> getGroups();
 
     void actualize(@NotNull Collection<M3uChannel> channels);
 

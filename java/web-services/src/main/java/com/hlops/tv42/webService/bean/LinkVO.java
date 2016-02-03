@@ -1,8 +1,6 @@
 package com.hlops.tv42.webService.bean;
 
-import com.hlops.tv42.core.bean.M3uChannel;
-import com.hlops.tv42.core.bean.TvShowChannel;
-import com.hlops.tv42.webService.LinksResource;
+import com.hlops.tv42.core.bean.Link;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -12,50 +10,41 @@ import java.io.Serializable;
  */
 public class LinkVO implements Serializable {
 
-    private String id;
-    private String name;
-    private String sourceName;
-    private String showChannel;
+    private String channel;
+    private String tvShow;
+    private String group;
+    private Short timeshift;
 
     public LinkVO() {
     }
 
-    public LinkVO(@NotNull M3uChannel channel, @NotNull String sourceName) {
-        this.id = channel.getId();
-        this.name = channel.getName();
-        this.sourceName = sourceName;
+    public LinkVO(@NotNull Link link) {
+        this.channel = link.getM3uChannel();
+        this.tvShow = link.getTvShowChannel();
+        this.timeshift = link.getTimeshift();
     }
 
-    public String getId() {
-        return id;
+    public String getChannel() {
+        return channel;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getGroup() {
+        return group;
     }
 
-    public String getName() {
-        return name;
+    public void setGroup(String group) {
+        this.group = group;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Short getTimeshift() {
+        return timeshift;
     }
 
-    public String getSourceName() {
-        return sourceName;
+    public void setTimeshift(Short timeshift) {
+        this.timeshift = timeshift;
     }
 
-    public void setSourceName(String sourceName) {
-        this.sourceName = sourceName;
-    }
-
-
-    public void setShowChannel(String showChannel) {
-        this.showChannel = showChannel;
-    }
-
-    public String getShowChannel() {
-        return showChannel;
+    public String getTvShow() {
+        return tvShow;
     }
 }

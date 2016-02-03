@@ -1,10 +1,10 @@
 package com.hlops.tv42.core.services.impl;
 
+import com.hlops.tv42.core.bean.Link;
+import com.hlops.tv42.core.bean.M3uChannel;
 import com.hlops.tv42.core.bean.Source;
-import com.hlops.tv42.core.services.DbService;
-import com.hlops.tv42.core.services.M3uService;
-import com.hlops.tv42.core.services.SourceService;
-import com.hlops.tv42.core.services.XmltvService;
+import com.hlops.tv42.core.bean.TvShowChannel;
+import com.hlops.tv42.core.services.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -19,9 +19,7 @@ import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,6 +41,9 @@ public class SourceServiceImpl implements SourceService {
 
     @Autowired
     XmltvService xmltvService;
+
+    @Autowired
+    LinkService linkService;
 
     @Override
     public Source getSource(String id) {
@@ -134,6 +135,27 @@ public class SourceServiceImpl implements SourceService {
         }
         source.setLastModified(System.currentTimeMillis());
         dbService.update(DbService.Entity.sources, source);
+
+        actualizeLinks();
+    }
+
+    private void actualizeLinks() {
+
+        Set<Link> links = new HashSet<>();
+        for (M3uChannel channel : m3uService.getChannels()) {
+            // todo: check direct link
+            // if (channel.tvShowChannel == null)
+            if (linkService.getLink(channel.getName()) == null) {
+                TvShowChannel tvShowChannel = xmltvService.findByName(channel.getName());
+                if (tvShowChannel != null) {
+                    links.add(new Link(channel.getName(), tvShowChannel.getName()));
+                }
+            }
+        }
+
+        if (!links.isEmpty()) {
+            linkService.update(links);
+        }
     }
 
 }
