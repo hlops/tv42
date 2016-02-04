@@ -3,9 +3,13 @@ package com.hlops.tv42.webService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
+import com.hlops.tv42.core.bean.Link;
 import com.hlops.tv42.core.bean.M3uChannel;
+import com.hlops.tv42.core.bean.TvShowChannel;
+import com.hlops.tv42.core.bean.TvShowItem;
+import com.hlops.tv42.core.services.LinkService;
 import com.hlops.tv42.core.services.M3uService;
-import com.hlops.tv42.core.services.SourceService;
+import com.hlops.tv42.core.services.XmltvService;
 import com.hlops.tv42.webService.bean.TvShowVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,7 +38,10 @@ public class TvShowResource {
     private M3uService m3uService;
 
     @Autowired
-    private SourceService sourceService;
+    private LinkService linkService;
+
+    @Autowired
+    private XmltvService xmltvService;
 
     @RequestMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
     @ResponseBody
@@ -44,7 +52,18 @@ public class TvShowResource {
         jsonWriter.beginArray();
 
         for (M3uChannel channel : m3uService.getChannels()) {
-            gson.toJson(new TvShowVO(channel, sourceService.getSource(channel.getSource()).getName()), TvShowVO.class, jsonWriter);
+            Link link = linkService.getLink(channel.getName());
+            if (link != null) {
+                TvShowChannel tvShowChannel = xmltvService.getChannelByName(link.getTvShowChannel());
+                if (tvShowChannel != null) {
+                    TvShowVO tvShow = new TvShowVO(channel);
+                    List<TvShowItem> items = xmltvService.findItems(tvShowChannel, System.currentTimeMillis(), System.currentTimeMillis());
+                    if (!items.isEmpty()) {
+                        tvShow.setShow(items.get(0).getTitle());
+                    }
+                    gson.toJson(tvShow, TvShowVO.class, jsonWriter);
+                }
+            }
         }
         jsonWriter.endArray();
         jsonWriter.close();

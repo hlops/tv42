@@ -80,9 +80,9 @@ public class M3uServiceImplTest extends Assert {
         {
             Collection<M3uChannel> m3uChannels = new ArrayList<>();
             m3uChannels.add(new M3uChannel("test1", "channel1"));
-            m3uChannels.add(new M3uChannel("test1", "channel2"));
+            m3uChannels.add(new M3uChannel("test1", "channel2", "group 1"));
             m3uChannels.add(new M3uChannel("test2", "channel1"));
-            m3uChannels.add(new M3uChannel("test2", "channel2"));
+            m3uChannels.add(new M3uChannel("test2", "channel2", "group 1"));
             m3uService.actualize(m3uChannels);
 
             //noinspection unchecked

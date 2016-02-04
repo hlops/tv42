@@ -13,14 +13,13 @@ import java.io.Serializable;
  */
 public class TvShowVO implements Serializable {
     private String name;
-    private String sourceName;
+    private String show;
 
     public TvShowVO() {
     }
 
-    public TvShowVO(@NotNull M3uChannel channel, @NotNull String sourceName) {
+    public TvShowVO(@NotNull M3uChannel channel) {
         this.name = channel.getName();
-        this.sourceName = sourceName;
     }
 
     public String getName() {
@@ -31,12 +30,11 @@ public class TvShowVO implements Serializable {
         this.name = name;
     }
 
-    public String getSourceName() {
-        return sourceName;
+    public String getShow() {
+        return show;
     }
 
-    public void setSourceName(String sourceName) {
-        this.sourceName = sourceName;
+    public void setShow(String show) {
+        this.show = show;
     }
-
 }

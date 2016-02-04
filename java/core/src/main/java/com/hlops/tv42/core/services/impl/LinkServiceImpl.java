@@ -17,7 +17,7 @@ import java.util.Collection;
 public class LinkServiceImpl implements LinkService {
 
     @Autowired
-    DbService dbService;
+    private DbService dbService;
 
     @Override
     @Nullable

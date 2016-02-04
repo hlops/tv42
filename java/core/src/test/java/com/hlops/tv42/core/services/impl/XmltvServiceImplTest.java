@@ -1,5 +1,6 @@
 package com.hlops.tv42.core.services.impl;
 
+import com.hlops.tv42.core.bean.TvShowChannel;
 import com.hlops.tv42.core.services.XmltvService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,6 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.InputStream;
+import java.util.Collection;
 
 /**
  * Created by tom on 1/31/16.
@@ -24,8 +26,8 @@ public class XmltvServiceImplTest extends Assert {
     public void testLoad() throws Exception {
 
         try (InputStream inputStream = getClass().getResourceAsStream("/xmltv1.xml.gz");) {
-            XmltvService.XmltvPack xmltvPack = xmltvService.load("test", inputStream);
-            xmltvService.actualize(xmltvPack);
+            Collection<TvShowChannel> channels = xmltvService.load("test", inputStream);
+            xmltvService.actualize(channels);
         }
     }
 }

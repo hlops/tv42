@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -16,26 +15,15 @@ import java.util.List;
  */
 public interface XmltvService {
 
-    class XmltvPack {
-        List<TvShowItem> items = new ArrayList<>();
-        List<TvShowChannel> channels = new ArrayList<>();
+    List<TvShowItem> findItems(TvShowChannel tvShowChannel, long start, long stop);
 
-        public List<TvShowItem> getItems() {
-            return items;
-        }
-
-        public List<TvShowChannel> getChannels() {
-            return channels;
-        }
-    }
-
-    Collection<TvShowItem> getItems();
+    TvShowChannel getChannelByName(String tvShowChannel);
 
     Collection<TvShowChannel> getChannels();
 
-    void actualize(@NotNull XmltvPack xmltvPack);
+    void actualize(@NotNull Collection<TvShowChannel> channels);
 
-    XmltvPack load(@NotNull String source, @NotNull InputStream stream) throws IOException;
+    Collection<TvShowChannel> load(@NotNull String source, @NotNull InputStream stream) throws IOException;
 
     @Nullable
     TvShowChannel findByName(@NotNull String name);

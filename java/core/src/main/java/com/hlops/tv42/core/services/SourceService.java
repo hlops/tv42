@@ -2,6 +2,7 @@ package com.hlops.tv42.core.services;
 
 import com.hlops.tv42.core.bean.Source;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -18,6 +19,8 @@ public interface SourceService {
     Source getSource(String id);
 
     Collection<Source> getSources();
+
+    Collection<Source> getOrderedSources(@Nullable Source.SourceType sourceType);
 
     void update(@NotNull Collection<Source> sources);
 

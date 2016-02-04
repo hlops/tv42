@@ -2,6 +2,9 @@ package com.hlops.tv42.core.bean;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by tom on 1/31/16.
  */
@@ -11,6 +14,7 @@ public class TvShowChannel implements Identifiable {
     private final String channelId;
     private String name;
     private String icon;
+    private List<TvShowItem> items = new ArrayList<>();
 
     public TvShowChannel(@NotNull String source, @NotNull String channelId) {
         this.source = source;
@@ -75,5 +79,9 @@ public class TvShowChannel implements Identifiable {
         result = 31 * result + name.hashCode();
         result = 31 * result + (icon != null ? icon.hashCode() : 0);
         return result;
+    }
+
+    public List<TvShowItem> getItems() {
+        return items;
     }
 }

@@ -26,6 +26,11 @@ public class M3uChannel implements Identifiable {
         this.name = name;
     }
 
+    public M3uChannel(@NotNull String source, @NotNull String name, String group) {
+        this(source, name);
+        this.group = group;
+    }
+
     @NotNull
     @Override
     public String getId() {

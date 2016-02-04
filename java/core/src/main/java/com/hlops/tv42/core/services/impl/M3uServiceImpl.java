@@ -12,7 +12,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -25,10 +28,10 @@ import java.util.stream.Collectors;
 public class M3uServiceImpl implements M3uService {
 
     @Autowired
-    DbService dbService;
+    private DbService dbService;
 
     @Autowired
-    LinkService linkService;
+    private LinkService linkService;
 
     @Override
     public Collection<M3uChannel> getChannels() {
@@ -44,10 +47,8 @@ public class M3uServiceImpl implements M3uService {
 
     @Override
     public void actualize(@NotNull Collection<M3uChannel> channels) {
-
-        Set<String> sources = channels.stream().map(M3uChannel::getSource).collect(Collectors.toSet());
-        Collection<M3uChannel> allChannels = getChannels();
-        Set<M3uChannel> sourceChannels = allChannels.stream().filter(p -> sources.contains(p.getSource())).collect(Collectors.toSet());
+        List<String> sources = channels.stream().map(M3uChannel::getSource).collect(Collectors.toList());
+        List<M3uChannel> sourceChannels = getChannels().stream().filter(p -> sources.contains(p.getSource())).collect(Collectors.toList());
         sourceChannels.forEach(p -> p.setActual(false));
         sourceChannels.addAll(channels);
 
@@ -61,7 +62,9 @@ public class M3uServiceImpl implements M3uService {
             String groupName = channel.getGroup();
             //noinspection unchecked
             Map<String, M3uGroup> stringMap = (Map<String, M3uGroup>) dbService.get(DbService.Entity.m3uGroups);
-            stringMap.computeIfAbsent(groupName, p -> new M3uGroup(groupName));
+            if (groupName != null) {
+                stringMap.computeIfAbsent(groupName, p -> new M3uGroup(groupName));
+            }
         }
     }
 

@@ -8,6 +8,7 @@ import com.hlops.tv42.core.services.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sun.net.www.protocol.file.FileURLConnection;
@@ -20,6 +21,8 @@ import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,16 +37,16 @@ public class SourceServiceImpl implements SourceService {
     private static Logger log = LogManager.getLogger(SourceServiceImpl.class);
 
     @Autowired
-    DbService dbService;
+    private DbService dbService;
 
     @Autowired
-    M3uService m3uService;
+    private M3uService m3uService;
 
     @Autowired
-    XmltvService xmltvService;
+    private XmltvService xmltvService;
 
     @Autowired
-    LinkService linkService;
+    private LinkService linkService;
 
     @Override
     public Source getSource(String id) {
@@ -54,6 +57,17 @@ public class SourceServiceImpl implements SourceService {
     public Collection<Source> getSources() {
         //noinspection unchecked
         return (Collection<Source>) dbService.get(DbService.Entity.sources).values();
+    }
+
+    @Override
+    public Collection<Source> getOrderedSources(@Nullable Source.SourceType sourceType) {
+        //noinspection unchecked
+        Collection<Source> sources = (Collection<Source>) dbService.get(DbService.Entity.sources).values();
+        Stream<Source> stream = sources.stream();
+        if (sourceType != null) {
+            stream = stream.filter(source -> source.getType() == sourceType);
+        }
+        return stream.sorted().collect(Collectors.toList());
     }
 
     @Override
@@ -141,20 +155,21 @@ public class SourceServiceImpl implements SourceService {
 
     private void actualizeLinks() {
 
-        Set<Link> links = new HashSet<>();
+        Map<String, Link> links = new HashMap<>();
         for (M3uChannel channel : m3uService.getChannels()) {
             // todo: check direct link
             // if (channel.tvShowChannel == null)
             if (linkService.getLink(channel.getName()) == null) {
                 TvShowChannel tvShowChannel = xmltvService.findByName(channel.getName());
                 if (tvShowChannel != null) {
-                    links.add(new Link(channel.getName(), tvShowChannel.getName()));
+                    Link link = new Link(channel.getName(), tvShowChannel.getChannelId());
+                    links.put(link.getId(), link);
                 }
             }
         }
 
         if (!links.isEmpty()) {
-            linkService.update(links);
+            linkService.update(links.values());
         }
     }
 
