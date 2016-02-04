@@ -50,7 +50,7 @@ public class XmltvServiceImpl implements XmltvService {
     @Override
     public List<TvShowItem> findItems(TvShowChannel channel, long start, long stop) {
         return channel.getItems().stream().filter(tvShowItem ->
-                tvShowItem.getStart() <= start && tvShowItem.getStop() >= stop
+                tvShowItem.getStart() <= stop && tvShowItem.getStop() >= start
         ).collect(Collectors.toList());
     }
 

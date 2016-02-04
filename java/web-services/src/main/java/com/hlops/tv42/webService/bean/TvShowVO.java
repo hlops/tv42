@@ -1,9 +1,11 @@
 package com.hlops.tv42.webService.bean;
 
 import com.hlops.tv42.core.bean.M3uChannel;
+import com.hlops.tv42.core.bean.TvShowItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,13 +15,14 @@ import java.io.Serializable;
  */
 public class TvShowVO implements Serializable {
     private String name;
-    private String show;
+    private String group;
+    private List<TvShowItem> items;
 
-    public TvShowVO() {
-    }
-
-    public TvShowVO(@NotNull M3uChannel channel) {
+    public TvShowVO(@NotNull M3uChannel channel, List<TvShowItem> items) {
+        this.items = items;
         this.name = channel.getName();
+        this.group = channel.getGroup();
+
     }
 
     public String getName() {
@@ -30,11 +33,19 @@ public class TvShowVO implements Serializable {
         this.name = name;
     }
 
-    public String getShow() {
-        return show;
+    public String getGroup() {
+        return group;
     }
 
-    public void setShow(String show) {
-        this.show = show;
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public List<TvShowItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<TvShowItem> items) {
+        this.items = items;
     }
 }

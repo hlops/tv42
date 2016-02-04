@@ -1,13 +1,18 @@
 <md-list>
-    <md-subheader class="md-no-sticky">Программа ({{channels.length}})</md-subheader>
-    <md-list-item class="md-2-line md-clickable"
+    <md-subheader class="md-no-sticky">Программа передач ({{channels.length}})</md-subheader>
+    <md-list-item class="md-3-line md-clickable"
                   md-ink-ripple
                   ng-repeat="channel in channels = (tvShowCtrl.model.channels | filter:appCtrl.model.isSearch ? appCtrl.model.search:'')"
-    >
+            >
         <div class="md-list-item-text" flex layout="column">
             <h3>{{ channel.name }} </h3>
 
-            <p> {{ channel.show}} </p>
+            <p> {{ channel.group}} </p>
+
+            <p><span ng-repeat="item in channel.items">
+                {{item.title}}
+            </span>
+            </p>
         </div>
         <md-divider></md-divider>
     </md-list-item>

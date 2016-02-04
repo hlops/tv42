@@ -56,11 +56,7 @@ public class TvShowResource {
             if (link != null) {
                 TvShowChannel tvShowChannel = xmltvService.getChannelByName(link.getTvShowChannel());
                 if (tvShowChannel != null) {
-                    TvShowVO tvShow = new TvShowVO(channel);
-                    List<TvShowItem> items = xmltvService.findItems(tvShowChannel, System.currentTimeMillis(), System.currentTimeMillis());
-                    if (!items.isEmpty()) {
-                        tvShow.setShow(items.get(0).getTitle());
-                    }
+                    TvShowVO tvShow = new TvShowVO(channel, xmltvService.findItems(tvShowChannel, System.currentTimeMillis(), System.currentTimeMillis() + 4*3600000));
                     gson.toJson(tvShow, TvShowVO.class, jsonWriter);
                 }
             }
