@@ -1,16 +1,27 @@
 'use strict';
 
-var $mdSidenav;
 export default class AppController {
-  constructor($scope, $mdSidenav) {
+  constructor($scope, $mdSidenav, tvService) {
     this.model = {
-      currentItem: undefined
-    }
+      currentMenuItem: undefined,
+      groups: []
+    };
     this.$mdSidenav = $mdSidenav;
+    this.tvService = tvService;
+
+    this.readGroups();
+  }
+
+  readGroups() {
+    var vm = this;
+    this.tvService.getGroups().then(
+        function(res) {
+          vm.model.groups = res.data;
+        });
   }
 
   isActiveMenuItem(item) {
-    return this.model.currentItem === item;
+    return this.model.currentMenuItem === item;
   }
 
   toggleSidenav(id) {
@@ -19,4 +30,4 @@ export default class AppController {
   }
 }
 
-AppController.$inject = ['$scope', '$mdSidenav'];
+AppController.$inject = ['$scope', '$mdSidenav', 'tvService'];
