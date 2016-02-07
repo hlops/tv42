@@ -12,10 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -78,7 +75,7 @@ public class M3uServiceImpl implements M3uService {
     }
 
     @Override
-    public List<M3uChannel> load(@NotNull String source, @NotNull BufferedReader reader) throws IOException {
+    public List<M3uChannel> load(@NotNull String source, int sourceWeight, @NotNull BufferedReader reader) throws IOException {
         List<M3uChannel> channels = new ArrayList<>();
         try {
             String line, lineUC;
@@ -108,7 +105,7 @@ public class M3uServiceImpl implements M3uService {
             }
 
             for (ExtInf item : items) {
-                M3uChannel channel = new M3uChannel(source, item.getName());
+                M3uChannel channel = new M3uChannel(item.getName(), source, sourceWeight);
                 channels.add(channel);
                 channel.setGroup(item.get(ExtInf.Attribute.group_title));
                 channel.setUrl(item.getUrl());

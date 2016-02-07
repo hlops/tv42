@@ -10,7 +10,9 @@ export default class LinksController extends CommonPageController {
     this.tvService = tvService;
 
     this.model = {
-      links: []
+      links: [],
+      rightPanelVisible: false,
+      editLink: undefined
     };
 
     this.init($scope);
@@ -25,8 +27,24 @@ export default class LinksController extends CommonPageController {
     var vm = this;
     this.tvService.getLinks().then(
         function(res) {
-          vm.model.links = res.data;
+          vm.model.links = res.data.sort(function(l1, l2) {
+            return l1.channel.localeCompare(l2.channel);
+          });
         });
+  }
+
+  add() {
+    this.edit({});
+  }
+
+  edit(link) {
+    this.model.editLink = angular.extend({}, link);
+    this.model.rightPanelVisible = true;
+  }
+
+  close() {
+    this.model.rightPanelVisible = false;
+    this.model.editLink = undefined;
   }
 
 }

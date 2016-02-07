@@ -13,7 +13,7 @@ public class LinkVO implements Serializable {
     private String channel;
     private String tvShow;
     private String group;
-    private Short timeshift;
+    private Short shift;
 
     public LinkVO() {
     }
@@ -21,11 +21,23 @@ public class LinkVO implements Serializable {
     public LinkVO(@NotNull Link link) {
         this.channel = link.getM3uChannel();
         this.tvShow = link.getTvShowChannel();
-        this.timeshift = link.getTimeshift();
+        this.shift = link.getTimeshift();
     }
 
     public String getChannel() {
         return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    public String getTvShow() {
+        return tvShow;
+    }
+
+    public void setTvShow(String tvShow) {
+        this.tvShow = tvShow;
     }
 
     public String getGroup() {
@@ -36,15 +48,11 @@ public class LinkVO implements Serializable {
         this.group = group;
     }
 
-    public Short getTimeshift() {
-        return timeshift;
+    public Short getShift() {
+        return shift;
     }
 
-    public void setTimeshift(Short timeshift) {
-        this.timeshift = timeshift;
-    }
-
-    public String getTvShow() {
-        return tvShow;
+    public void setShift(Short shift) {
+        this.shift = shift;
     }
 }

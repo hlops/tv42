@@ -43,19 +43,23 @@ public class M3uServiceImplTest extends Assert {
     public void testLoad() throws Exception {
         InputStream inputStream = getClass().getResourceAsStream("/playlist.m3u");
         assertNotNull(inputStream);
-        List<M3uChannel> channels = m3uService.load("test", new BufferedReader(new InputStreamReader(inputStream)));
+        List<M3uChannel> channels = m3uService.load("test", 101, new BufferedReader(new InputStreamReader(inputStream)));
         assertNotNull(channels);
         assertEquals(160, channels.size());
 
         M3uChannel channel = channels.get(0);
-        assertEquals("test_Первый", channel.getId());
+        assertEquals("Первый", channel.getId());
+        assertEquals("test", channel.getSource());
+        assertEquals(101, channel.getSourceWeight());
         assertEquals("Эфир", channel.getGroup());
         assertEquals("udp://@239.1.15.1:1234", channel.getUrl());
         assertEquals("2", channel.getTvgName());
         assertTrue(channel.getAttributes().isEmpty());
 
         channel = channels.get(23);
-        assertEquals("test_Nickelodeon", channel.getId());
+        assertEquals("Nickelodeon", channel.getId());
+        assertEquals("test", channel.getSource());
+        assertEquals(101, channel.getSourceWeight());
         assertEquals("Детям и мамам", channel.getGroup());
         assertEquals("udp://@239.1.3.4:1234", channel.getUrl());
         assertEquals("2230", channel.getTvgName());
@@ -63,11 +67,13 @@ public class M3uServiceImplTest extends Assert {
         assertFalse(channel.getAttributes().contains(M3uChannel.ChannelAttribute.HD));
 
         channel = channels.get(130);
-        assertEquals("test_Eurosport 2 HD", channel.getId());
+        assertEquals("Eurosport 2 HD", channel.getId());
         assertEquals("Спорт HD", channel.getGroup());
 
         channel = channels.get(131);
-        assertEquals("test_Кинопоказ HD 1", channel.getId());
+        assertEquals("Кинопоказ HD 1", channel.getId());
+        assertEquals("test", channel.getSource());
+        assertEquals(101, channel.getSourceWeight());
         assertEquals("Клуб HD", channel.getGroup());
         assertEquals("udp://@239.1.17.2:1234", channel.getUrl());
         assertEquals("603", channel.getTvgName());
@@ -79,33 +85,63 @@ public class M3uServiceImplTest extends Assert {
     public void testActualize() throws Exception {
         {
             Collection<M3uChannel> m3uChannels = new ArrayList<>();
-            m3uChannels.add(new M3uChannel("test1", "channel1"));
-            m3uChannels.add(new M3uChannel("test1", "channel2", "group 1"));
-            m3uChannels.add(new M3uChannel("test2", "channel1"));
-            m3uChannels.add(new M3uChannel("test2", "channel2", "group 1"));
-            m3uService.actualize(m3uChannels);
-
-            //noinspection unchecked
-            Collection<M3uChannel> channels = m3uService.getChannels();
-            assertEquals(4, channels.size());
-            channels.stream().forEach(p -> assertEquals(true, p.isActual()));
-        }
-
-        {
-            Collection<M3uChannel> m3uChannels = new ArrayList<>();
-            m3uChannels.add(new M3uChannel("test2", "channel2"));
-            m3uChannels.add(new M3uChannel("test3", "channel1"));
+            m3uChannels.add(new M3uChannel("channel0", "test0", 0));
+            m3uChannels.add(new M3uChannel("channel1", "test1", 0));
+            m3uChannels.add(new M3uChannel("channel2", "test1", 0));
+            m3uChannels.add(new M3uChannel("channel3", "test2", 0));
+            m3uChannels.add(new M3uChannel("channel4", "test2", 0));
             m3uService.actualize(m3uChannels);
 
             //noinspection unchecked
             Collection<M3uChannel> channels = m3uService.getChannels();
             assertEquals(5, channels.size());
-            channels.stream().filter(p -> p.getSource().equals("test1")).forEach(
-                    p -> assertEquals(true, p.isActual()));
-            channels.stream().filter(p -> p.getSource().equals("test2")).forEach(
-                    p -> assertEquals(p.getName().equals("channel2"), p.isActual()));
-            channels.stream().filter(p -> p.getSource().equals("test3")).forEach(
-                    p -> assertEquals(true, p.isActual()));
+            channels.stream().forEach(p -> assertEquals(true, p.isActual()));
+        }
+
+        {
+            Collection<M3uChannel> m3uChannels = new ArrayList<>();
+            m3uChannels.add(new M3uChannel("channel1", "test1", -1));
+            m3uChannels.add(new M3uChannel("channel2", "test2", 10));
+            m3uChannels.add(new M3uChannel("channel3", "test3", -1));
+            m3uService.actualize(m3uChannels);
+
+            //noinspection unchecked
+            Collection<M3uChannel> channels = m3uService.getChannels();
+            assertEquals(5, channels.size());
+            channels.stream().filter(p -> p.getName().equals("channel0")).forEach(
+                    p -> {
+                        assertEquals(true, p.isActual());
+                        assertEquals("test0", p.getSource());
+                    }
+            );
+
+            channels.stream().filter(p -> p.getName().equals("channel1")).forEach(
+                    p -> {
+                        assertEquals(true, p.isActual());
+                        assertEquals("test1", p.getSource());
+                    }
+            );
+
+            channels.stream().filter(p -> p.getName().equals("channel2")).forEach(
+                    p -> {
+                        assertEquals(true, p.isActual());
+                        assertEquals("test2", p.getSource());
+                    }
+            );
+
+            channels.stream().filter(p -> p.getName().equals("channel3")).forEach(
+                    p -> {
+                        assertEquals(false, p.isActual());
+                        assertEquals("test2", p.getSource());
+                    }
+            );
+
+            channels.stream().filter(p -> p.getName().equals("channel4")).forEach(
+                    p -> {
+                        assertEquals(false, p.isActual());
+                        assertEquals("test2", p.getSource());
+                    }
+            );
         }
     }
 

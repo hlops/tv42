@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by tom on 1/31/16.
  */
-public class TvShowItem implements Identifiable {
+public class TvShowItem implements Identifiable<TvShowItem> {
 
     private final String source;
     private final long start;
@@ -95,4 +95,8 @@ public class TvShowItem implements Identifiable {
         return (TvShowItem) super.clone();
     }
 
+    @Override
+    public TvShowItem combine(TvShowItem oldValue) throws CloneNotSupportedException {
+        return clone();
+    }
 }

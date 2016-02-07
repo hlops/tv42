@@ -45,7 +45,7 @@ public class SourceResource {
         Gson gson = gsonBuilder.create();
         JsonWriter jsonWriter = new JsonWriter(responseWriter);
         jsonWriter.beginArray();
-        for (Source source : sourceService.getSources()) {
+        for (Source source : sourceService.getOrderedSources(null)) {
             gson.toJson(new SourceVO(source), SourceVO.class, jsonWriter);
         }
         jsonWriter.endArray();

@@ -11,30 +11,33 @@ import java.util.Set;
  * Date: 1/13/16
  * Time: 11:35 AM
  */
-public class M3uChannel implements Identifiable {
+public class M3uChannel implements Identifiable<M3uChannel> {
 
-    private final String source;
     private final String name;
+    private final String source;
+    private final int sourceWeight;
     private final Set<ChannelAttribute> attributes = new HashSet<>();
     private String url;
     private boolean actual = true;
     private String group;
     private String tvgName;
+    private long created = System.currentTimeMillis();
 
-    public M3uChannel(@NotNull String source, @NotNull String name) {
+    public M3uChannel(@NotNull String name, @NotNull String source, int sourceWeight) {
         this.source = source;
         this.name = name;
+        this.sourceWeight = sourceWeight;
     }
 
-    public M3uChannel(@NotNull String source, @NotNull String name, String group) {
-        this(source, name);
+    public M3uChannel(@NotNull String name, String group, @NotNull String source, int sourceWeight) {
+        this(name, source, sourceWeight);
         this.group = group;
     }
 
     @NotNull
     @Override
     public String getId() {
-        return source + "_" + name;
+        return name;
     }
 
     public boolean isActual() {
@@ -63,6 +66,10 @@ public class M3uChannel implements Identifiable {
         return source;
     }
 
+    public int getSourceWeight() {
+        return sourceWeight;
+    }
+
     public String getTvgName() {
         return tvgName;
     }
@@ -83,6 +90,10 @@ public class M3uChannel implements Identifiable {
         return attributes;
     }
 
+    public long getCreated() {
+        return created;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public M3uChannel clone() throws CloneNotSupportedException {
@@ -90,44 +101,52 @@ public class M3uChannel implements Identifiable {
     }
 
     @Override
-    public String toString() {
-        return "M3uChannel{" +
-                "actual=" + actual +
-                ", source='" + source + '\'' +
-                ", name='" + name + '\'' +
-                ", url='" + url + '\'' +
-                ", group='" + group + '\'' +
-                ", tvgName='" + tvgName + '\'' +
-                ", attributes=" + attributes +
-                '}';
+    public M3uChannel combine(M3uChannel oldValue) throws CloneNotSupportedException {
+        if (oldValue.getSource().equals(getSource())) {
+            return clone();
+        } else {
+            boolean isOldValueUsed = oldValue.getSourceWeight() > getSourceWeight();
+            if (oldValue.getSourceWeight() == getSourceWeight()) {
+                isOldValueUsed = oldValue.source.compareTo(source) >= 0;
+            }
+            if (isOldValueUsed) {
+                return oldValue;
+            } else {
+                M3uChannel newValue = clone();
+                newValue.created = oldValue.created;
+                return newValue;
+            }
+        }
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof M3uChannel)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         M3uChannel channel = (M3uChannel) o;
 
         if (actual != channel.actual) return false;
-        if (source != null ? !source.equals(channel.source) : channel.source != null) return false;
-        if (name != null ? !name.equals(channel.name) : channel.name != null) return false;
+        if (created != channel.created) return false;
+        if (!source.equals(channel.source)) return false;
+        if (!name.equals(channel.name)) return false;
+        if (!attributes.equals(channel.attributes)) return false;
         if (url != null ? !url.equals(channel.url) : channel.url != null) return false;
         if (group != null ? !group.equals(channel.group) : channel.group != null) return false;
-        if (tvgName != null ? !tvgName.equals(channel.tvgName) : channel.tvgName != null) return false;
-        return attributes.equals(channel.attributes);
+        return !(tvgName != null ? !tvgName.equals(channel.tvgName) : channel.tvgName != null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = source != null ? source.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
+        int result = source.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + attributes.hashCode();
         result = 31 * result + (url != null ? url.hashCode() : 0);
         result = 31 * result + (actual ? 1 : 0);
         result = 31 * result + (group != null ? group.hashCode() : 0);
         result = 31 * result + (tvgName != null ? tvgName.hashCode() : 0);
-        result = 31 * result + attributes.hashCode();
+        result = 31 * result + (int) (created ^ (created >>> 32));
         return result;
     }
 

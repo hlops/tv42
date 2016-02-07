@@ -6,9 +6,9 @@ import com.google.gson.stream.JsonWriter;
 import com.hlops.tv42.core.bean.Link;
 import com.hlops.tv42.core.bean.M3uChannel;
 import com.hlops.tv42.core.bean.TvShowChannel;
-import com.hlops.tv42.core.bean.TvShowItem;
 import com.hlops.tv42.core.services.LinkService;
 import com.hlops.tv42.core.services.M3uService;
+import com.hlops.tv42.core.services.SourceService;
 import com.hlops.tv42.core.services.XmltvService;
 import com.hlops.tv42.webService.bean.TvShowVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,6 +40,9 @@ public class TvShowResource {
 
     @Autowired
     private LinkService linkService;
+
+    @Autowired
+    private SourceService sourceService;
 
     @Autowired
     private XmltvService xmltvService;

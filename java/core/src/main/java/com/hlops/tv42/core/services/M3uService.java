@@ -23,6 +23,6 @@ public interface M3uService {
 
     void actualize(@NotNull Collection<M3uChannel> channels);
 
-    List<M3uChannel> load(@NotNull String source, @NotNull BufferedReader reader) throws IOException;
+    List<M3uChannel> load(@NotNull String source, int sourceWeight, @NotNull BufferedReader reader) throws IOException;
 
 }

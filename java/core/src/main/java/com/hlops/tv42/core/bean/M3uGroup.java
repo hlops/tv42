@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  * Date: 2/3/16
  * Time: 12:14 PM
  */
-public class M3uGroup implements Identifiable {
+public class M3uGroup implements Identifiable<M3uGroup> {
 
     private final String name;
     private String order;
@@ -39,6 +39,11 @@ public class M3uGroup implements Identifiable {
     @Override
     public M3uGroup clone() throws CloneNotSupportedException {
         return (M3uGroup) super.clone();
+    }
+
+    @Override
+    public M3uGroup combine(M3uGroup oldValue) throws CloneNotSupportedException {
+        return clone();
     }
 
     @Override

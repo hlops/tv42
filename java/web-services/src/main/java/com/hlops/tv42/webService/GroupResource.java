@@ -1,11 +1,8 @@
 package com.hlops.tv42.webService;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import com.hlops.tv42.core.bean.M3uGroup;
 import com.hlops.tv42.core.services.M3uService;
-import com.hlops.tv42.core.services.SourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,19 +20,13 @@ import java.io.Writer;
 @RequestMapping("/groups")
 public class GroupResource {
 
-    static GsonBuilder gsonBuilder = new GsonBuilder();
-
     @Autowired
     private M3uService m3uService;
-
-    @Autowired
-    private SourceService sourceService;
 
     @RequestMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
     @ResponseBody
     public void list(Writer responseWriter) throws IOException {
 
-        Gson gson = gsonBuilder.create();
         JsonWriter jsonWriter = new JsonWriter(responseWriter);
         jsonWriter.beginArray();
 

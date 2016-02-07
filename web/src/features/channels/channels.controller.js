@@ -23,9 +23,16 @@ export default class ChannelsController extends CommonPageController {
 
   readChannels() {
     var vm = this;
-    this.tvService.getChannels().then(
+    var groups;
+    vm.tvService.getGroups().then(function(res) {
+      groups = res.data;
+      return vm.tvService.getChannels();
+    }).then(
         function(res) {
-          vm.model.channels = res.data;
+          vm.model.channels = res.data.sort(function(c1, c2) {
+            return groups.indexOf(c1.group) - groups.indexOf(c2.group) ||
+                c1.name.localeCompare(c2.name);
+          });
         });
   }
 

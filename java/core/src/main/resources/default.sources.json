@@ -7,11 +7,17 @@
   {
     "name": "cn.ru",
     "type": "m3u",
-    "url": "http://www.cn.ru/data/tv/playlist.m3u"
+    "url": "http://www.cn.ru/data/tv/playlist.m3u",
+    "weight": 100
   },
   {
     "name": "Программа teleguide.info",
     "type": "xmltv",
     "url": "http://www.teleguide.info/download/new3/xmltv.xml.gz"
+  },
+  {
+    "name": "old teleguide",
+    "type": "xmltv",
+    "url": "http://www.teleguide.info/download/old/xmltv.xml.gz"
   }
 ]

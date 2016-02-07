@@ -137,7 +137,7 @@ public class SourceServiceImpl implements SourceService {
     private void loadSource(@NotNull Source source, @NotNull URLConnection connection) throws IOException {
         if (source.getType() == Source.SourceType.m3u) {
             m3uService.actualize(
-                    m3uService.load(source.getId(), new BufferedReader(new InputStreamReader(connection.getInputStream())))
+                    m3uService.load(source.getId(), source.getWeight(), new BufferedReader(new InputStreamReader(connection.getInputStream())))
             );
         } else if (source.getType() == Source.SourceType.xmltv) {
             xmltvService.actualize(

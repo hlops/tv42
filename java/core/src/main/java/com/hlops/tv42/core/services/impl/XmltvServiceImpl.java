@@ -1,5 +1,6 @@
 package com.hlops.tv42.core.services.impl;
 
+import com.hlops.tv42.core.bean.Identifiable;
 import com.hlops.tv42.core.bean.Source;
 import com.hlops.tv42.core.bean.TvShowChannel;
 import com.hlops.tv42.core.bean.TvShowItem;
@@ -57,10 +58,11 @@ public class XmltvServiceImpl implements XmltvService {
     @Override
     @Nullable
     public TvShowChannel getChannelByName(String name) {
+        Map<String, ? extends Identifiable> map = dbService.get(DbService.Entity.tvShowChannels);
         Collection<Source> xmltvSources = sourceService.getOrderedSources(Source.SourceType.xmltv);
         for (Source source : xmltvSources) {
             TvShowChannel tvShowChannel = (TvShowChannel)
-                    dbService.get(DbService.Entity.tvShowChannels).get(source.getId() + "_" + name);
+                    map.get(source.getId() + "_" + name);
             if (tvShowChannel != null) {
                 return tvShowChannel;
             }

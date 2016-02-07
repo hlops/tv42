@@ -89,7 +89,7 @@ public class DbServiceImpl implements DbService {
                 .make();
 
         for (Entity entity : Entity.values()) {
-            db.treeMapCreate(entity.name())
+            db.hashMapCreate(entity.name())
                     .keySerializer(Serializer.STRING)
                     .makeOrGet();
         }
@@ -109,7 +109,7 @@ public class DbServiceImpl implements DbService {
 
     @Override
     public Map<String, Identifiable> get(@NotNull Entity entity) {
-        return db.treeMap(entity.name());
+        return db.hashMap(entity.name());
     }
 
     @Override
@@ -121,7 +121,8 @@ public class DbServiceImpl implements DbService {
                 if (oldValue == null) {
                     map.put(value.getId(), value);
                 } else if (!value.equals(oldValue)) {
-                    map.put(value.getId(), value.clone());
+                    //noinspection unchecked
+                    map.put(value.getId(), (Identifiable) value.combine(oldValue));
                 }
             } catch (CloneNotSupportedException e) {
                 log.error(e.getMessage() + " for " + value.getClass(), e);
@@ -149,7 +150,7 @@ public class DbServiceImpl implements DbService {
 
     @Override
     public void drop(@NotNull Entity entity) {
-        db.treeMap(entity.name()).clear();
+        db.hashMap(entity.name()).clear();
         db.commit();
     }
 

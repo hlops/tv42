@@ -10,10 +10,13 @@ import java.io.Serializable;
  * Date: 1/13/16
  * Time: 11:38 AM
  */
-public interface Identifiable extends Serializable, Cloneable {
+public interface Identifiable<T> extends Serializable, Cloneable {
 
     @NotNull
     String getId();
 
-    <T extends Identifiable> T clone() throws CloneNotSupportedException;
+    T clone() throws CloneNotSupportedException;
+
+    T combine(T oldValue) throws CloneNotSupportedException;
+
 }

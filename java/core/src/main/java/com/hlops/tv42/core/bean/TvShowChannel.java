@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by tom on 1/31/16.
  */
-public class TvShowChannel implements Identifiable {
+public class TvShowChannel implements Identifiable<TvShowChannel> {
 
     private final String source;
     private final String channelId;
@@ -56,6 +56,11 @@ public class TvShowChannel implements Identifiable {
     @Override
     public TvShowChannel clone() throws CloneNotSupportedException {
         return (TvShowChannel) super.clone();
+    }
+
+    @Override
+    public TvShowChannel combine(TvShowChannel oldValue) throws CloneNotSupportedException {
+        return clone();
     }
 
     @Override
