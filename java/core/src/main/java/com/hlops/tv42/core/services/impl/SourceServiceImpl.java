@@ -160,7 +160,7 @@ public class SourceServiceImpl implements SourceService {
             // todo: check direct link
             // if (channel.tvShowChannel == null)
             if (linkService.getLink(channel.getName()) == null) {
-                TvShowChannel tvShowChannel = xmltvService.findByName(channel.getName());
+                TvShowChannel tvShowChannel = xmltvService.matchByName(channel.getName());
                 if (tvShowChannel != null) {
                     Link link = new Link(channel.getName(), tvShowChannel.getChannelId());
                     links.put(link.getId(), link);

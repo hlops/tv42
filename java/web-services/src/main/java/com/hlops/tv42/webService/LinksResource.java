@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import com.hlops.tv42.core.bean.Link;
 import com.hlops.tv42.core.services.LinkService;
+import com.hlops.tv42.core.services.XmltvService;
 import com.hlops.tv42.webService.bean.LinkVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -31,6 +32,9 @@ public class LinksResource {
     @Autowired
     private LinkService linkService;
 
+    @Autowired
+    private XmltvService xmltvService;
+
     @RequestMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
     @ResponseBody
     public void list(Writer responseWriter) throws IOException {
@@ -39,7 +43,7 @@ public class LinksResource {
         JsonWriter jsonWriter = new JsonWriter(responseWriter);
         jsonWriter.beginArray();
         for (Link link : linkService.getLinks()) {
-            gson.toJson(new LinkVO(link), LinkVO.class, jsonWriter);
+            gson.toJson(new LinkVO(link, xmltvService.getChannelById(link.getTvShowChannel())), LinkVO.class, jsonWriter);
         }
         jsonWriter.endArray();
         jsonWriter.close();

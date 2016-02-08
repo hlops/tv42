@@ -11,6 +11,7 @@ export default class LinksController extends CommonPageController {
 
     this.model = {
       links: [],
+      tvShowChannels: [],
       rightPanelVisible: false,
       editLink: undefined
     };
@@ -18,9 +19,8 @@ export default class LinksController extends CommonPageController {
     this.init($scope);
   }
 
-  init($scope) {
+  init() {
     this.readLinks();
-    var vm = this;
   }
 
   readLinks() {
@@ -29,6 +29,8 @@ export default class LinksController extends CommonPageController {
         function(res) {
           vm.model.links = res.data.sort(function(l1, l2) {
             return l1.channel.localeCompare(l2.channel);
+          });
+          vm.model.links.forEach(function() {
           });
         });
   }

@@ -10,11 +10,11 @@
                   md-ink-ripple
                   ng-repeat="link in links = (linksCtrl.model.links | filter:appCtrl.model.isSearch ? appCtrl.model.search:'')"
                   ng-click="linksCtrl.edit(link)"
-            >
+    >
         <div class="md-list-item-text" flex layout="column">
             <h3>{{ link.channel }} </h3>
 
-            <p> {{ link.tvShow }} </p>
+            <p> {{ link.tvShowName }} </p>
 
             <p> {{ link.group }} </p>
 
@@ -42,12 +42,16 @@
                 <md-input-container>
                     <label for="form-links-channel">Канал</label>
                     <input type="text" id="form-links-channel" ng-model="linksCtrl.model.editLink.channel"
-                           ng-required="true">
+                           ng-required="true" readonly="readonly">
                 </md-input-container>
                 <md-input-container>
                     <label for="form-links-show">Телепрограмма</label>
-                    <input type="text" id="form-links-show" ng-model="linksCtrl.model.editLink.tvShow"
-                           ng-required="true">
+                    <md-select type="text" id="form-links-show" ng-model="linksCtrl.model.editLink.tvShow"
+                               ng-required="true">
+                        <md-option ng-repeat="channel in linksCtrl.model.tvShowChannels" value="{{channel.id}}">
+                            {{channel.name}}
+                        </md-option>
+                    </md-select>
                 </md-input-container>
                 <md-input-container>
                     <label for="form-links-url">Группа</label>

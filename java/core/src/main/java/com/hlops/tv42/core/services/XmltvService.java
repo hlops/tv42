@@ -17,7 +17,9 @@ public interface XmltvService {
 
     List<TvShowItem> findItems(TvShowChannel tvShowChannel, long start, long stop);
 
-    TvShowChannel getChannelByName(String tvShowChannel);
+    TvShowChannel getChannelByName(String name);
+
+    TvShowChannel getChannelById(String id);
 
     Collection<TvShowChannel> getChannels();
 
@@ -26,5 +28,6 @@ public interface XmltvService {
     Collection<TvShowChannel> load(@NotNull String source, @NotNull InputStream stream) throws IOException;
 
     @Nullable
-    TvShowChannel findByName(@NotNull String name);
+    TvShowChannel matchByName(@NotNull String name);
+
 }

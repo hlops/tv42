@@ -1,11 +1,14 @@
 'use strict';
 
 var groupPromise;
-const MAX_GROUPS_AGE = 10000;
+const MAX_GROUPS_AGE = 5000;
 
 class tvService {
   constructor($http) {
     this.$http = $http;
+    this.model = {
+      groups: []
+    }
   }
 
   getSources() {
@@ -33,11 +36,15 @@ class tvService {
   }
 
   getGroups() {
+    var vm = this;
     var now = new Date().getTime();
     if (groupPromise && now - groupPromise.age < MAX_GROUPS_AGE) {
       return groupPromise;
     }
     groupPromise = this.$http.get('/rest/groups');
+    groupPromise.then(function(res) {
+      vm.model.groups = res.data;
+    });
     groupPromise.age = now;
     return groupPromise;
   }

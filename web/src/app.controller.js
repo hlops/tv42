@@ -3,21 +3,16 @@
 export default class AppController {
   constructor($scope, $mdSidenav, tvService) {
     this.model = {
-      currentMenuItem: undefined,
-      groups: []
+      currentMenuItem: undefined
     };
     this.$mdSidenav = $mdSidenav;
     this.tvService = tvService;
 
-    this.readGroups();
+    this.init();
   }
 
-  readGroups() {
-    var vm = this;
-    this.tvService.getGroups().then(
-        function(res) {
-          vm.model.groups = res.data;
-        });
+  init() {
+
   }
 
   isActiveMenuItem(item) {
@@ -26,7 +21,10 @@ export default class AppController {
 
   toggleSidenav(id) {
     this.$mdSidenav(id).toggle();
+  }
 
+  pageLoaded() {
+    this.tvService.getGroups();
   }
 }
 

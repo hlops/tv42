@@ -71,6 +71,11 @@ public class XmltvServiceImpl implements XmltvService {
     }
 
     @Override
+    public TvShowChannel getChannelById(String id) {
+        return (TvShowChannel) dbService.get(DbService.Entity.tvShowChannels).get(id);
+    }
+
+    @Override
     public Collection<TvShowChannel> getChannels() {
         //noinspection unchecked
         return (Collection<TvShowChannel>) dbService.get(DbService.Entity.tvShowChannels).values();
@@ -211,7 +216,7 @@ public class XmltvServiceImpl implements XmltvService {
 
     @Override
     @Nullable
-    public TvShowChannel findByName(@NotNull String name) {
+    public TvShowChannel matchByName(@NotNull String name) {
         for (TvShowChannel channel : getChannels()) {
             String channelName = channel.getName().toLowerCase().trim();
 

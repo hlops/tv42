@@ -1,6 +1,7 @@
 package com.hlops.tv42.webService.bean;
 
 import com.hlops.tv42.core.bean.Link;
+import com.hlops.tv42.core.bean.TvShowChannel;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -11,16 +12,18 @@ import java.io.Serializable;
 public class LinkVO implements Serializable {
 
     private String channel;
-    private String tvShow;
+    private String tvShowId;
+    private String tvShowName;
     private String group;
     private Short shift;
 
     public LinkVO() {
     }
 
-    public LinkVO(@NotNull Link link) {
+    public LinkVO(@NotNull Link link, TvShowChannel tvShowChannel) {
         this.channel = link.getM3uChannel();
-        this.tvShow = link.getTvShowChannel();
+        this.tvShowId = tvShowChannel.getId();
+        this.tvShowName = tvShowChannel.getName();
         this.shift = link.getTimeshift();
     }
 
@@ -32,12 +35,20 @@ public class LinkVO implements Serializable {
         this.channel = channel;
     }
 
-    public String getTvShow() {
-        return tvShow;
+    public String getTvShowId() {
+        return tvShowId;
     }
 
-    public void setTvShow(String tvShow) {
-        this.tvShow = tvShow;
+    public void setTvShowId(String tvShowId) {
+        this.tvShowId = tvShowId;
+    }
+
+    public String getTvShowName() {
+        return tvShowName;
+    }
+
+    public void setTvShowName(String tvShowName) {
+        this.tvShowName = tvShowName;
     }
 
     public String getGroup() {

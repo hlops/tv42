@@ -5,11 +5,11 @@ import CommonPageController from '../../common/common.page.controller';
 const name = 'groups';
 
 export default class GroupsController extends CommonPageController {
-  constructor($scope) {
+  constructor($scope, tvService) {
     super($scope, name);
+    this.tvService = tvService;
 
-    this.model = {
-    };
+    this.model = {};
 
     this.init($scope);
   }
@@ -17,6 +17,9 @@ export default class GroupsController extends CommonPageController {
   init($scope) {
   }
 
+  getGroups() {
+    return this.tvService.model.groups;
+  }
 }
 
-GroupsController.$inject = ['$scope'];
+GroupsController.$inject = ['$scope', 'tvService'];
