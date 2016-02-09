@@ -15,9 +15,7 @@ import java.util.List;
  */
 public interface XmltvService {
 
-    List<TvShowItem> findItems(TvShowChannel tvShowChannel, long start, long stop);
-
-    TvShowChannel getChannelByName(String name);
+    List<TvShowItem> findItems(TvShowChannel tvShowChannel, long start, long stop, @Nullable String preferableSource);
 
     TvShowChannel getChannelById(String id);
 

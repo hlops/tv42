@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -58,9 +56,9 @@ public class TvShowResource {
         for (M3uChannel channel : m3uService.getChannels()) {
             Link link = linkService.getLink(channel.getName());
             if (link != null) {
-                TvShowChannel tvShowChannel = xmltvService.getChannelByName(link.getTvShowChannel());
+                TvShowChannel tvShowChannel = xmltvService.getChannelById(link.getTvShowChannel());
                 if (tvShowChannel != null) {
-                    TvShowVO tvShow = new TvShowVO(channel, xmltvService.findItems(tvShowChannel, System.currentTimeMillis(), System.currentTimeMillis() + 4*3600000));
+                    TvShowVO tvShow = new TvShowVO(channel, xmltvService.findItems(tvShowChannel, System.currentTimeMillis(), System.currentTimeMillis() + 4 * 3600000, null));
                     gson.toJson(tvShow, TvShowVO.class, jsonWriter);
                 }
             }

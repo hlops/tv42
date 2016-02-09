@@ -2,10 +2,12 @@ package com.hlops.tv42.core.bean;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
+
 /**
  * Created by tom on 1/31/16.
  */
-public class TvShowItem implements Identifiable<TvShowItem> {
+public class TvShowItem implements Serializable {
 
     private final String source;
     private final long start;
@@ -14,42 +16,10 @@ public class TvShowItem implements Identifiable<TvShowItem> {
     private String description;
     private String category;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof TvShowItem)) return false;
-
-        TvShowItem that = (TvShowItem) o;
-
-        if (start != that.start) return false;
-        if (stop != that.stop) return false;
-        if (!source.equals(that.source)) return false;
-        if (title != null ? !title.equals(that.title) : that.title != null) return false;
-        if (description != null ? !description.equals(that.description) : that.description != null) return false;
-        return !(category != null ? !category.equals(that.category) : that.category != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = source.hashCode();
-        result = 31 * result + (int) (start ^ (start >>> 32));
-        result = 31 * result + (int) (stop ^ (stop >>> 32));
-        result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (category != null ? category.hashCode() : 0);
-        return result;
-    }
-
     public TvShowItem(@NotNull String source, long start, long stop) {
         this.source = source;
         this.start = start;
         this.stop = stop;
-    }
-
-    @NotNull
-    public String getId() {
-        return source + "_" + String.valueOf(start);
     }
 
     public String getSource() {
@@ -89,14 +59,30 @@ public class TvShowItem implements Identifiable<TvShowItem> {
         this.category = category;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public TvShowItem clone() throws CloneNotSupportedException {
-        return (TvShowItem) super.clone();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TvShowItem)) return false;
+
+        TvShowItem that = (TvShowItem) o;
+
+        if (start != that.start) return false;
+        if (stop != that.stop) return false;
+        if (!source.equals(that.source)) return false;
+        if (title != null ? !title.equals(that.title) : that.title != null) return false;
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        return !(category != null ? !category.equals(that.category) : that.category != null);
+
     }
 
     @Override
-    public TvShowItem combine(TvShowItem oldValue) throws CloneNotSupportedException {
-        return clone();
+    public int hashCode() {
+        int result = source.hashCode();
+        result = 31 * result + (int) (start ^ (start >>> 32));
+        result = 31 * result + (int) (stop ^ (stop >>> 32));
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (category != null ? category.hashCode() : 0);
+        return result;
     }
 }

@@ -4,6 +4,7 @@ import com.hlops.tv42.core.bean.TvShowChannel;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,50 +14,25 @@ import java.io.Serializable;
  */
 public class TvShowChannelVO implements Serializable {
 
-    private String id;
-    private String name;
-    private String sourceName;
-    private String showChannel;
+    private final String id;
+    private final String name;
+    private final List<String> sources;
 
-    public TvShowChannelVO() {
-    }
-
-    public TvShowChannelVO(@NotNull TvShowChannel channel, @NotNull String sourceName) {
+    public TvShowChannelVO(@NotNull TvShowChannel channel, @NotNull List<String> sources) {
         this.id = channel.getId();
         this.name = channel.getName();
-        this.sourceName = sourceName;
+        this.sources = sources;
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSourceName() {
-        return sourceName;
-    }
-
-    public void setSourceName(String sourceName) {
-        this.sourceName = sourceName;
-    }
-
-
-    public void setShowChannel(String showChannel) {
-        this.showChannel = showChannel;
-    }
-
-    public String getShowChannel() {
-        return showChannel;
+    public List<String> getSources() {
+        return sources;
     }
 }

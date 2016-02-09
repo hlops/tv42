@@ -2,33 +2,27 @@ package com.hlops.tv42.core.bean;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by tom on 1/31/16.
  */
 public class TvShowChannel implements Identifiable<TvShowChannel> {
 
-    private final String source;
     private final String channelId;
     private String name;
     private String icon;
-    private List<TvShowItem> items = new ArrayList<>();
+    private final Map<String, List<TvShowItem>> sources = new HashMap<>();
 
     public TvShowChannel(@NotNull String source, @NotNull String channelId) {
-        this.source = source;
         this.channelId = channelId;
+        sources.computeIfAbsent(source, s -> new ArrayList<>());
     }
 
     @NotNull
     @Override
     public String getId() {
-        return source + "_" + channelId;
-    }
-
-    public String getSource() {
-        return source;
+        return channelId;
     }
 
     public String getChannelId() {
@@ -52,6 +46,14 @@ public class TvShowChannel implements Identifiable<TvShowChannel> {
         this.icon = icon;
     }
 
+    public Set<String> getSources() {
+        return sources.keySet();
+    }
+
+    public List<TvShowItem> getItems(String source) {
+        return sources.get(source);
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public TvShowChannel clone() throws CloneNotSupportedException {
@@ -59,34 +61,12 @@ public class TvShowChannel implements Identifiable<TvShowChannel> {
     }
 
     @Override
-    public TvShowChannel combine(TvShowChannel oldValue) throws CloneNotSupportedException {
+    public TvShowChannel combine(TvShowChannel oldChannel) throws CloneNotSupportedException {
+        for (String source: oldChannel.getSources()) {
+            List<TvShowItem> items = sources.computeIfAbsent(source, s -> new ArrayList<>());
+            items.addAll(oldChannel.getItems(source));
+        }
         return clone();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        TvShowChannel channel = (TvShowChannel) o;
-
-        if (!source.equals(channel.source)) return false;
-        if (!channelId.equals(channel.channelId)) return false;
-        if (!name.equals(channel.name)) return false;
-        return !(icon != null ? !icon.equals(channel.icon) : channel.icon != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = source.hashCode();
-        result = 31 * result + channelId.hashCode();
-        result = 31 * result + name.hashCode();
-        result = 31 * result + (icon != null ? icon.hashCode() : 0);
-        return result;
-    }
-
-    public List<TvShowItem> getItems() {
-        return items;
-    }
 }

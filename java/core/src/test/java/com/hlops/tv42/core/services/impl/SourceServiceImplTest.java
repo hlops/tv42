@@ -111,7 +111,7 @@ public class SourceServiceImplTest extends Assert {
         assertEquals(110, channels.size());
 
         for (TvShowChannel channel : channels) {
-            Collection<TvShowItem> items = channel.getItems();
+            Collection<TvShowItem> items = channel.getItems(source.getId());
             assertEquals(0, items.size());
         }
     }

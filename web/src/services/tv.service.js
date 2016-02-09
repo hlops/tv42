@@ -35,6 +35,10 @@ class tvService {
     return this.$http.get('/rest/links');
   }
 
+  getLinksChannels() {
+    return this.$http.get('/rest/links/channels');
+  }
+
   getGroups() {
     var vm = this;
     var now = new Date().getTime();

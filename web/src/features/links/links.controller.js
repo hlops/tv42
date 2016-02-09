@@ -30,8 +30,10 @@ export default class LinksController extends CommonPageController {
           vm.model.links = res.data.sort(function(l1, l2) {
             return l1.channel.localeCompare(l2.channel);
           });
-          vm.model.links.forEach(function() {
-          });
+        });
+    this.tvService.getLinksChannels().then(
+        function(res) {
+          vm.model.tvShowChannels = res.data.sort();
         });
   }
 

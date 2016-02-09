@@ -49,25 +49,21 @@ public class XmltvServiceImpl implements XmltvService {
     private SourceService sourceService;
 
     @Override
-    public List<TvShowItem> findItems(TvShowChannel channel, long start, long stop) {
-        return channel.getItems().stream().filter(tvShowItem ->
-                tvShowItem.getStart() <= stop && tvShowItem.getStop() >= start
-        ).collect(Collectors.toList());
-    }
-
-    @Override
-    @Nullable
-    public TvShowChannel getChannelByName(String name) {
-        Map<String, ? extends Identifiable> map = dbService.get(DbService.Entity.tvShowChannels);
-        Collection<Source> xmltvSources = sourceService.getOrderedSources(Source.SourceType.xmltv);
-        for (Source source : xmltvSources) {
-            TvShowChannel tvShowChannel = (TvShowChannel)
-                    map.get(source.getId() + "_" + name);
-            if (tvShowChannel != null) {
-                return tvShowChannel;
+    public List<TvShowItem> findItems(TvShowChannel channel, long start, long stop, @Nullable String preferableSource) {
+        List<String> sources = new ArrayList<>();
+        if (preferableSource != null) {
+            sources.add(preferableSource);
+        } else {
+            sources.addAll(sourceService.getOrderedSources(Source.SourceType.xmltv).stream().map(Source::getId).collect(Collectors.toList()));
+        }
+        for (String source : sources) {
+            if (channel.getSources().contains(source)) {
+                return channel.getItems(source).stream().filter(tvShowItem ->
+                        tvShowItem.getStart() <= stop && tvShowItem.getStop() >= start
+                ).collect(Collectors.toList());
             }
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -83,36 +79,22 @@ public class XmltvServiceImpl implements XmltvService {
 
     @Override
     public void actualize(@NotNull Collection<TvShowChannel> channels) {
-        Map<String, TvShowChannel> modifiedChannels = new HashMap<>();
-        for (TvShowChannel channel : channels) {
-            modifiedChannels.put(channel.getId(), channel);
-        }
+        dbService.update(DbService.Entity.tvShowChannels, channels);
+        deleteObsoleteItems();
+    }
 
-        //noinspection unchecked
-        Map<String, TvShowChannel> channelsMap = (Map<String, TvShowChannel>) dbService.get(DbService.Entity.tvShowChannels);
-        for (TvShowChannel channel : channels) {
-            TvShowChannel oldChannel = channelsMap.get(channel.getId());
-            if (oldChannel != null) {
-                channel.getItems().addAll(oldChannel.getItems());
-                modifiedChannels.put(channel.getId(), channel);
+    private void deleteObsoleteItems() {
+        Set<TvShowChannel> modifiedChannels = new HashSet<>();
+        long minimalTime = System.currentTimeMillis() - MAX_AGE;
+        for (TvShowChannel channel : getChannels()) {
+            for (String source : channel.getSources()) {
+                if (channel.getItems(source).removeAll(
+                        channel.getItems(source).stream().filter(i -> i.getStart() < minimalTime).collect(Collectors.toList()))) {
+                    modifiedChannels.add(channel);
+                }
             }
         }
-
-        Map<String, TvShowChannel> allChannels = new HashMap<>(channelsMap);
-        allChannels.putAll(modifiedChannels);
-
-        long minTime = System.currentTimeMillis() - MAX_AGE;
-        //noinspection unchecked
-        for (TvShowChannel channel : allChannels.values()) {
-            List<TvShowItem> filtered = channel.getItems().stream()
-                    .filter(item -> item.getStart() >= minTime).collect(Collectors.toList());
-            if (filtered.size() != channel.getItems().size()) {
-                channel.getItems().clear();
-                channel.getItems().addAll(filtered);
-                modifiedChannels.put(channel.getId(), channel);
-            }
-        }
-        dbService.update(DbService.Entity.tvShowChannels, modifiedChannels.values());
+        dbService.update(DbService.Entity.tvShowChannels, modifiedChannels);
     }
 
     private boolean isGZipStream(PushbackInputStream pushbackInputStream) throws IOException {
@@ -137,6 +119,7 @@ public class XmltvServiceImpl implements XmltvService {
         try {
             XMLStreamReader xmlReader = inputFactory.createXMLStreamReader(new InputStreamReader(stream, "UTF-8"));
             try {
+                long minimalTime = System.currentTimeMillis() - MAX_AGE;
                 XMLEventReader eventReader = inputFactory.createXMLEventReader(xmlReader);
 
                 QName qNameId = new QName("id");
@@ -177,7 +160,9 @@ public class XmltvServiceImpl implements XmltvService {
                                 tvItem = new TvShowItem(source,
                                         parseTime(el.getAttributeByName(qNameStart)),
                                         parseTime(el.getAttributeByName(qNameStop)));
-                                channels.get(el.getAttributeByName(qNameChannel).getValue()).getItems().add(tvItem);
+                                if (tvItem.getStart() >= minimalTime) {
+                                    channels.get(el.getAttributeByName(qNameChannel).getValue()).getItems(source).add(tvItem);
+                                }
                             } catch (ParseException e) {
                                 log.error(e.getMessage(), e);
                             }

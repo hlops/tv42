@@ -4,9 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import com.hlops.tv42.core.bean.Link;
+import com.hlops.tv42.core.bean.TvShowChannel;
 import com.hlops.tv42.core.services.LinkService;
+import com.hlops.tv42.core.services.M3uService;
 import com.hlops.tv42.core.services.XmltvService;
 import com.hlops.tv42.webService.bean.LinkVO;
+import com.hlops.tv42.webService.bean.TvShowChannelVO;
+import com.hlops.tv42.webService.bean.TvShowVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +37,9 @@ public class LinksResource {
     private LinkService linkService;
 
     @Autowired
+    private M3uService m3uService;
+
+    @Autowired
     private XmltvService xmltvService;
 
     @RequestMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
@@ -43,10 +50,25 @@ public class LinksResource {
         JsonWriter jsonWriter = new JsonWriter(responseWriter);
         jsonWriter.beginArray();
         for (Link link : linkService.getLinks()) {
-            gson.toJson(new LinkVO(link, xmltvService.getChannelById(link.getTvShowChannel())), LinkVO.class, jsonWriter);
+            // todo
+            gson.toJson(new LinkVO(link, null), LinkVO.class, jsonWriter);
         }
         jsonWriter.endArray();
         jsonWriter.close();
     }
 
+    @RequestMapping(value = "channels", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
+    @ResponseBody
+    public void listChannels(Writer responseWriter) throws IOException {
+        Gson gson = gsonBuilder.create();
+        JsonWriter jsonWriter = new JsonWriter(responseWriter);
+        jsonWriter.beginArray();
+
+        for (TvShowChannel channel : xmltvService.getChannels()) {
+            TvShowChannelVO tvShow = new TvShowChannelVO(channel, null);
+            gson.toJson(tvShow, TvShowVO.class, jsonWriter);
+        }
+        jsonWriter.endArray();
+        jsonWriter.close();
+    }
 }
