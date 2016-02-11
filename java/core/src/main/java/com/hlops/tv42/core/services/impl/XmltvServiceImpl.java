@@ -58,9 +58,12 @@ public class XmltvServiceImpl implements XmltvService {
         }
         for (String source : sources) {
             if (channel.getSources().contains(source)) {
-                return channel.getItems(source).stream().filter(tvShowItem ->
-                        tvShowItem.getStart() <= stop && tvShowItem.getStop() >= start
+                List<TvShowItem> items = channel.getItems(source).stream().filter(tvShowItem ->
+                                tvShowItem.getStart() <= stop && tvShowItem.getStop() >= start
                 ).collect(Collectors.toList());
+                if (!items.isEmpty()) {
+                    return items;
+                }
             }
         }
         return Collections.emptyList();

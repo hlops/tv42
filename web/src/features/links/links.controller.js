@@ -5,36 +5,49 @@ import CommonPageController from '../../common/common.page.controller';
 const name = 'links';
 
 export default class LinksController extends CommonPageController {
-  constructor($scope, tvService) {
+  constructor($scope, $q, tvService) {
     super($scope, name);
     this.tvService = tvService;
 
     this.model = {
       links: [],
       tvShowChannels: [],
+      tvShowChannelsMap: {},
       rightPanelVisible: false,
-      editLink: undefined
+      editLink: undefined,
+      autocomplete: {}
     };
 
-    this.init($scope);
+    this.init($q);
   }
 
-  init() {
-    this.readLinks();
+  init($q) {
+    this.readLinks($q);
   }
 
-  readLinks() {
+  readLinks($q) {
     var vm = this;
-    this.tvService.getLinks().then(
+    $q.all([this.tvService.getLinks(), this.tvService.getLinksChannels()])
+        .then(
         function(res) {
-          vm.model.links = res.data.sort(function(l1, l2) {
+          vm.model.links = res[0].data.sort(function(l1, l2) {
             return l1.channel.localeCompare(l2.channel);
           });
+          vm.model.tvShowChannels = res[1].data.sort();
+          vm.model.tvShowChannelsMap = vm.model.tvShowChannels.reduce(function(result, value) {
+            result[value.id] = value.name;
+            return result;
+          }, {});
+          vm.calculateChannelNames();
         });
-    this.tvService.getLinksChannels().then(
-        function(res) {
-          vm.model.tvShowChannels = res.data.sort();
-        });
+  }
+
+  calculateChannelNames() {
+    var vm = this;
+
+    this.model.links.forEach(function(link) {
+      link.tvShowName = vm.model.tvShowChannelsMap[link.tvShow];
+    });
   }
 
   add() {
@@ -53,4 +66,4 @@ export default class LinksController extends CommonPageController {
 
 }
 
-LinksController.$inject = ['$scope', 'tvService'];
+LinksController.$inject = ['$scope', '$q', 'tvService'];

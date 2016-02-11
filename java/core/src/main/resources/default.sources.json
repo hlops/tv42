@@ -13,7 +13,8 @@
   {
     "name": "Программа teleguide.info",
     "type": "xmltv",
-    "url": "http://www.teleguide.info/download/new3/xmltv.xml.gz"
+    "url": "http://www.teleguide.info/download/new3/xmltv.xml.gz",
+    "weight": 100
   },
   {
     "name": "old teleguide",

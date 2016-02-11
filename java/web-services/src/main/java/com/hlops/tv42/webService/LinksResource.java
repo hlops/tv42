@@ -10,7 +10,6 @@ import com.hlops.tv42.core.services.M3uService;
 import com.hlops.tv42.core.services.XmltvService;
 import com.hlops.tv42.webService.bean.LinkVO;
 import com.hlops.tv42.webService.bean.TvShowChannelVO;
-import com.hlops.tv42.webService.bean.TvShowVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,7 +65,7 @@ public class LinksResource {
 
         for (TvShowChannel channel : xmltvService.getChannels()) {
             TvShowChannelVO tvShow = new TvShowChannelVO(channel, null);
-            gson.toJson(tvShow, TvShowVO.class, jsonWriter);
+            gson.toJson(tvShow, TvShowChannelVO.class, jsonWriter);
         }
         jsonWriter.endArray();
         jsonWriter.close();

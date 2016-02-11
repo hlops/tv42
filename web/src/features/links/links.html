@@ -10,7 +10,7 @@
                   md-ink-ripple
                   ng-repeat="link in links = (linksCtrl.model.links | filter:appCtrl.model.isSearch ? appCtrl.model.search:'')"
                   ng-click="linksCtrl.edit(link)"
-    >
+            >
         <div class="md-list-item-text" flex layout="column">
             <h3>{{ link.channel }} </h3>
 
@@ -36,23 +36,30 @@
             <h2 class="md-toolbar-tools" ng-if="!linksCtrl.model.editLink.channel">Новая связь</h2>
             <span flex></span>
         </md-toolbar>
-        <form name="linksForm">
+        <form name="linksForm" ng-submit="$event.preventDefault()">
 
+            <input type="hidden" ng-model="linksCtrl.model.editLink.tvShow"/>
             <md-content layout="column" layout-padding>
                 <md-input-container>
                     <label for="form-links-channel">Канал</label>
                     <input type="text" id="form-links-channel" ng-model="linksCtrl.model.editLink.channel"
                            ng-required="true" readonly="readonly">
                 </md-input-container>
-                <md-input-container>
-                    <label for="form-links-show">Телепрограмма</label>
-                    <md-select type="text" id="form-links-show" ng-model="linksCtrl.model.editLink.tvShow"
-                               ng-required="true">
-                        <md-option ng-repeat="channel in linksCtrl.model.tvShowChannels" value="{{channel.id}}">
-                            {{channel.name}}
-                        </md-option>
-                    </md-select>
-                </md-input-container>
+                <md-autocomplete
+                        md-floating-label="Телепрограмма"
+                        md-selected-item="linksCtrl.model.editLink.tvShowName"
+                        md-search-text="linksCtrl.model.autocomplete.tvShowSearch"
+                        md-items="channel in linksCtrl.model.tvShowChannels | filter:{name:linksCtrl.model.autocomplete.tvShowSearch}"
+                        md-item-text="channel.name"
+                        md-menu-class="autocomplete-custom-template"
+                        md-min-length="0"
+                        ng-required="true">
+                    <md-item-template>
+                      <span class="item-title">
+                        <span> {{channel.name}} </span>
+                      </span>
+                    </md-item-template>
+                </md-autocomplete>
                 <md-input-container>
                     <label for="form-links-source">Источник</label>
                     <input type="text" id="form-links-source" ng-model="linksCtrl.model.editLink.source"

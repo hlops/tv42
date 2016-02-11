@@ -2,6 +2,7 @@ package com.hlops.tv42.webService.bean;
 
 import com.hlops.tv42.core.bean.TvShowChannel;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.List;
@@ -18,7 +19,7 @@ public class TvShowChannelVO implements Serializable {
     private final String name;
     private final List<String> sources;
 
-    public TvShowChannelVO(@NotNull TvShowChannel channel, @NotNull List<String> sources) {
+    public TvShowChannelVO(@NotNull TvShowChannel channel, @Nullable List<String> sources) {
         this.id = channel.getId();
         this.name = channel.getName();
         this.sources = sources;
