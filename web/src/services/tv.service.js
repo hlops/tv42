@@ -35,6 +35,10 @@ class tvService {
     return this.$http.get('/rest/links');
   }
 
+  saveLink(link) {
+    return this.$http.post('/rest/links', link);
+  }
+
   getLinksChannels() {
     return this.$http.get('/rest/links/channels');
   }

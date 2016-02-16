@@ -9,6 +9,7 @@ public class Link implements Identifiable<Link> {
 
     private final String m3uChannel;
     private final String tvShowChannel;
+    private String source;
     private String group;
     private Short timeshift;
 
@@ -33,6 +34,15 @@ public class Link implements Identifiable<Link> {
         return tvShowChannel;
     }
 
+    public String getSource() {
+
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
     public String getGroup() {
         return group;
     }
@@ -50,29 +60,6 @@ public class Link implements Identifiable<Link> {
         this.timeshift = timeshift;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Link link = (Link) o;
-
-        if (!m3uChannel.equals(link.m3uChannel)) return false;
-        if (!tvShowChannel.equals(link.tvShowChannel)) return false;
-        if (group != null ? !group.equals(link.group) : link.group != null) return false;
-        return !(timeshift != null ? !timeshift.equals(link.timeshift) : link.timeshift != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = m3uChannel.hashCode();
-        result = 31 * result + tvShowChannel.hashCode();
-        result = 31 * result + (group != null ? group.hashCode() : 0);
-        result = 31 * result + (timeshift != null ? timeshift.hashCode() : 0);
-        return result;
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public Link clone() throws CloneNotSupportedException {
@@ -82,6 +69,31 @@ public class Link implements Identifiable<Link> {
     @Override
     public Link combine(Link oldValue) throws CloneNotSupportedException {
         return clone();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Link link = (Link) o;
+
+        if (!m3uChannel.equals(link.m3uChannel)) return false;
+        if (!tvShowChannel.equals(link.tvShowChannel)) return false;
+        if (source != null ? !source.equals(link.source) : link.source != null) return false;
+        if (group != null ? !group.equals(link.group) : link.group != null) return false;
+        return !(timeshift != null ? !timeshift.equals(link.timeshift) : link.timeshift != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = m3uChannel.hashCode();
+        result = 31 * result + tvShowChannel.hashCode();
+        result = 31 * result + (source != null ? source.hashCode() : 0);
+        result = 31 * result + (group != null ? group.hashCode() : 0);
+        result = 31 * result + (timeshift != null ? timeshift.hashCode() : 0);
+        return result;
     }
 
 }

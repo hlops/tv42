@@ -12,13 +12,11 @@ import com.hlops.tv42.webService.bean.LinkVO;
 import com.hlops.tv42.webService.bean.TvShowChannelVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Collections;
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,6 +52,12 @@ public class LinksResource {
         }
         jsonWriter.endArray();
         jsonWriter.close();
+    }
+
+    @RequestMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
+    @ResponseBody
+    public void save(@RequestBody LinkVO link) throws IOException {
+        linkService.update(Collections.singletonList(link.toLink()));
     }
 
     @RequestMapping(value = "channels", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)

@@ -43,7 +43,7 @@
                 <md-input-container>
                     <label for="form-links-channel">Канал</label>
                     <input type="text" id="form-links-channel" ng-model="linksCtrl.model.editLink.channel"
-                           ng-required="true" readonly="readonly">
+                           ng-required="true">
                 </md-input-container>
                 <md-autocomplete
                         md-floating-label="Телепрограмма"
@@ -51,7 +51,6 @@
                         md-search-text="linksCtrl.model.autocomplete.tvShowSearch"
                         md-items="channel in linksCtrl.model.tvShowChannels | filter:{name:linksCtrl.model.autocomplete.tvShowSearch}"
                         md-item-text="channel.name"
-                        md-menu-class="autocomplete-custom-template"
                         md-min-length="0"
                         ng-required="true">
                     <md-item-template>
@@ -72,8 +71,19 @@
                 </md-input-container>
                 <md-input-container>
                     <label for="form-links-shift">Сдвиг</label>
-                    <input type="text" id="form-links-shift" ng-model="linksCtrl.model.editLink.shift"
-                           ng-required="false">
+
+                    <div layout>
+                        <div flex="20" layout layout-align="center center">
+                            <input flex id="form-links-shift"
+                                   type="number" ng-model="linksCtrl.model.editLink.shift">
+                        </div>
+                        <md-slider flex
+                                   ng-model="linksCtrl.shiftSlider"
+                                   ng-model-options="{getterSetter: true}"
+                                   step="1" min="-6" max="6"
+                                   aria-label="сдвиг">
+                        </md-slider>
+                    </div>
                 </md-input-container>
                 <md-button class="md-raised md-primary"
                            ng-click="linksCtrl.save()"

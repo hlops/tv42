@@ -43,4 +43,12 @@ public class LinkVO implements Serializable {
     public String getSource() {
         return source;
     }
+
+    public Link toLink() {
+        Link link = new Link(this.channel, this.tvShow);
+        link.setSource(this.getSource());
+        link.setGroup(this.getGroup());
+        link.setTimeshift(this.getShift());
+        return link;
+    }
 }
