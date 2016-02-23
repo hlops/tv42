@@ -48,6 +48,12 @@ export default class LinksController extends CommonPageController {
         });
   }
 
+  itemSelected(channel) {
+    if (channel) {
+      this.model.editLink.tvShow = channel.id;
+    }
+  }
+
   add() {
     this.edit({});
   }

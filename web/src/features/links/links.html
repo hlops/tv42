@@ -48,6 +48,7 @@
                 <md-autocomplete
                         md-floating-label="Телепрограмма"
                         md-selected-item="linksCtrl.model.editLink.tvShowName"
+                        md-selected-item-change="linksCtrl.itemSelected(channel)"
                         md-search-text="linksCtrl.model.autocomplete.tvShowSearch"
                         md-items="channel in linksCtrl.model.tvShowChannels | filter:{name:linksCtrl.model.autocomplete.tvShowSearch}"
                         md-item-text="channel.name"

@@ -119,6 +119,7 @@ public class XmltvServiceImpl implements XmltvService {
         }
         Map<String, TvShowChannel> channels = new LinkedHashMap<>();
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+        inputFactory.setProperty("javax.xml.stream.isCoalescing", true);
         try {
             XMLStreamReader xmlReader = inputFactory.createXMLStreamReader(new InputStreamReader(stream, "UTF-8"));
             try {

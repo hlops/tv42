@@ -12,6 +12,7 @@ public class Link implements Identifiable<Link> {
     private String source;
     private String group;
     private Short timeshift;
+    private Boolean active;
 
     public Link(@NotNull String m3uChannel, @NotNull String tvShowChannel) {
         this.m3uChannel = m3uChannel;
@@ -60,6 +61,14 @@ public class Link implements Identifiable<Link> {
         this.timeshift = timeshift;
     }
 
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public Link clone() throws CloneNotSupportedException {
@@ -82,7 +91,8 @@ public class Link implements Identifiable<Link> {
         if (!tvShowChannel.equals(link.tvShowChannel)) return false;
         if (source != null ? !source.equals(link.source) : link.source != null) return false;
         if (group != null ? !group.equals(link.group) : link.group != null) return false;
-        return !(timeshift != null ? !timeshift.equals(link.timeshift) : link.timeshift != null);
+        if (timeshift != null ? !timeshift.equals(link.timeshift) : link.timeshift != null) return false;
+        return !(active != null ? !active.equals(link.active) : link.active != null);
 
     }
 
@@ -93,7 +103,7 @@ public class Link implements Identifiable<Link> {
         result = 31 * result + (source != null ? source.hashCode() : 0);
         result = 31 * result + (group != null ? group.hashCode() : 0);
         result = 31 * result + (timeshift != null ? timeshift.hashCode() : 0);
+        result = 31 * result + (active != null ? active.hashCode() : 0);
         return result;
     }
-
 }

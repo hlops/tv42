@@ -20,5 +20,10 @@
     "name": "old teleguide",
     "type": "xmltv",
     "url": "http://www.teleguide.info/download/old/xmltv.xml.gz"
+  },
+  {
+    "name": "programtv",
+    "type": "xmltv",
+    "url": "http://programtv.ru/xmltv.xml.gz"
   }
 ]
