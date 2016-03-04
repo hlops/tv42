@@ -25,7 +25,7 @@ public class XmltvServiceImplTest extends Assert {
     @Test
     public void testLoad() throws Exception {
 
-        try (InputStream inputStream = getClass().getResourceAsStream("/xmltv1.xml.gz");) {
+        try (InputStream inputStream = getClass().getResourceAsStream("/xmltv2.xml");) {
             Collection<TvShowChannel> channels = xmltvService.load("test", inputStream);
             xmltvService.actualize(channels);
         }

@@ -21,10 +21,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.*;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PushbackInputStream;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.text.ParseException;
@@ -59,7 +56,7 @@ public class XmltvServiceImpl implements XmltvService {
         for (String source : sources) {
             if (channel.getSources().contains(source)) {
                 List<TvShowItem> items = channel.getItems(source).stream().filter(tvShowItem ->
-                                tvShowItem.getStart() <= stop && tvShowItem.getStop() >= start
+                        tvShowItem.getStart() <= stop && tvShowItem.getStop() >= start
                 ).collect(Collectors.toList());
                 if (!items.isEmpty()) {
                     return items;
@@ -113,9 +110,9 @@ public class XmltvServiceImpl implements XmltvService {
         PushbackInputStream pushbackInputStream = new PushbackInputStream(originalStream, 2);
         InputStream stream;
         if (isGZipStream(pushbackInputStream)) {
-            stream = new GZIPInputStream(pushbackInputStream);
+            stream = new FilteredStream(new GZIPInputStream(pushbackInputStream));
         } else {
-            stream = pushbackInputStream;
+            stream = new FilteredStream(pushbackInputStream);
         }
         Map<String, TvShowChannel> channels = new LinkedHashMap<>();
         XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -226,6 +223,18 @@ public class XmltvServiceImpl implements XmltvService {
             }
         }
         return null;
+    }
+
+    class FilteredStream extends FilterInputStream {
+
+        protected FilteredStream(InputStream in) {
+            super(in);
+        }
+
+        @Override
+        public int read(byte[] b, int off, int len) throws IOException {
+            return super.read(b, off, len);
+        }
     }
 
 }
