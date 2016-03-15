@@ -101,25 +101,6 @@ public class M3uChannel implements Identifiable<M3uChannel> {
     }
 
     @Override
-    public M3uChannel combine(M3uChannel oldValue) throws CloneNotSupportedException {
-        if (oldValue.getSource().equals(getSource())) {
-            return clone();
-        } else {
-            boolean isOldValueUsed = oldValue.getSourceWeight() > getSourceWeight();
-            if (oldValue.getSourceWeight() == getSourceWeight()) {
-                isOldValueUsed = oldValue.source.compareTo(source) >= 0;
-            }
-            if (isOldValueUsed) {
-                return oldValue;
-            } else {
-                M3uChannel newValue = clone();
-                newValue.created = oldValue.created;
-                return newValue;
-            }
-        }
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -148,6 +129,10 @@ public class M3uChannel implements Identifiable<M3uChannel> {
         result = 31 * result + (tvgName != null ? tvgName.hashCode() : 0);
         result = 31 * result + (int) (created ^ (created >>> 32));
         return result;
+    }
+
+    public void setCreated(long created) {
+        this.created = created;
     }
 
     public enum ChannelAttribute {

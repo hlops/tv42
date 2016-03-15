@@ -7,7 +7,7 @@ import com.hlops.tv42.core.bean.Link;
 import com.hlops.tv42.core.bean.M3uChannel;
 import com.hlops.tv42.core.bean.TvShowChannel;
 import com.hlops.tv42.core.services.LinkService;
-import com.hlops.tv42.core.services.M3uService;
+import com.hlops.tv42.core.services.M3uChannelService;
 import com.hlops.tv42.core.services.SourceService;
 import com.hlops.tv42.core.services.XmltvService;
 import com.hlops.tv42.webService.bean.TvShowVO;
@@ -34,7 +34,7 @@ public class TvShowResource {
     static GsonBuilder gsonBuilder = new GsonBuilder();
 
     @Autowired
-    private M3uService m3uService;
+    private M3uChannelService m3UChannelService;
 
     @Autowired
     private LinkService linkService;
@@ -53,7 +53,7 @@ public class TvShowResource {
         JsonWriter jsonWriter = new JsonWriter(responseWriter);
         jsonWriter.beginArray();
 
-        for (M3uChannel channel : m3uService.getChannels()) {
+        for (M3uChannel channel : m3UChannelService.getChannels()) {
             Link link = linkService.getLink(channel.getName());
             if (link != null) {
                 TvShowChannel tvShowChannel = xmltvService.getChannelById(link.getTvShowChannel());

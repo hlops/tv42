@@ -1,9 +1,6 @@
 package com.hlops.tv42.core.services.impl;
 
-import com.hlops.tv42.core.bean.Link;
-import com.hlops.tv42.core.bean.M3uChannel;
 import com.hlops.tv42.core.bean.Source;
-import com.hlops.tv42.core.bean.TvShowChannel;
 import com.hlops.tv42.core.services.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +17,9 @@ import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,16 +30,13 @@ import java.util.stream.Stream;
  * Time: 12:26 PM
  */
 @Service
-public class SourceServiceImpl implements SourceService {
+public class SourceServiceImpl extends GenericServiceImpl<Source> implements SourceService {
 
     private static final DateFormat HTTP_DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
     private static Logger log = LogManager.getLogger(SourceServiceImpl.class);
 
     @Autowired
-    private DbService dbService;
-
-    @Autowired
-    private M3uService m3uService;
+    private M3uChannelService m3UChannelService;
 
     @Autowired
     private XmltvService xmltvService;
@@ -49,21 +45,23 @@ public class SourceServiceImpl implements SourceService {
     private LinkService linkService;
 
     @Override
+    protected DbService.Entity getEntity() {
+        return DbService.Entity.sources;
+    }
+
+    @Override
     public Source getSource(String id) {
-        return (Source) dbService.get(DbService.Entity.sources).get(id);
+        return get(id);
     }
 
     @Override
     public Collection<Source> getSources() {
-        //noinspection unchecked
-        return (Collection<Source>) dbService.get(DbService.Entity.sources).values();
+        return values();
     }
 
     @Override
     public Collection<Source> getOrderedSources(@Nullable Source.SourceType sourceType) {
-        //noinspection unchecked
-        Collection<Source> sources = (Collection<Source>) dbService.get(DbService.Entity.sources).values();
-        Stream<Source> stream = sources.stream();
+        Stream<Source> stream = values().stream();
         if (sourceType != null) {
             stream = stream.filter(source -> source.getType() == sourceType);
         }
@@ -72,12 +70,12 @@ public class SourceServiceImpl implements SourceService {
 
     @Override
     public void update(@NotNull Collection<Source> sources) {
-        dbService.update(DbService.Entity.sources, sources);
+        actualize(sources);
     }
 
     @Override
     public void delete(List<Source> sources) {
-        dbService.delete(DbService.Entity.sources, sources);
+        super.delete(sources);
     }
 
     @Override
@@ -136,8 +134,8 @@ public class SourceServiceImpl implements SourceService {
 
     private void loadSource(@NotNull Source source, @NotNull URLConnection connection) throws IOException {
         if (source.getType() == Source.SourceType.m3u) {
-            m3uService.actualize(
-                    m3uService.load(source.getId(), source.getWeight(), new BufferedReader(new InputStreamReader(connection.getInputStream())))
+            m3UChannelService.actualize(
+                    m3UChannelService.load(source.getId(), source.getWeight(), new BufferedReader(new InputStreamReader(connection.getInputStream())))
             );
         } else if (source.getType() == Source.SourceType.xmltv) {
             xmltvService.actualize(
@@ -148,29 +146,13 @@ public class SourceServiceImpl implements SourceService {
             return;
         }
         source.setLastModified(System.currentTimeMillis());
-        dbService.update(DbService.Entity.sources, source);
+        actualize(source);
 
-        actualizeLinks();
+        linkService.actualizeLinks();
     }
 
-    private void actualizeLinks() {
-
-        Map<String, Link> links = new HashMap<>();
-        for (M3uChannel channel : m3uService.getChannels()) {
-            // todo: check direct link
-            // if (channel.tvShowChannel == null)
-            if (linkService.getLink(channel.getName()) == null) {
-                TvShowChannel tvShowChannel = xmltvService.matchByName(channel.getName());
-                if (tvShowChannel != null) {
-                    Link link = new Link(channel.getName(), tvShowChannel.getChannelId());
-                    links.put(link.getId(), link);
-                }
-            }
-        }
-
-        if (!links.isEmpty()) {
-            linkService.update(links.values());
-        }
+    @Override
+    protected void loadDefaultValues() {
+        loadDefaultValues(Source[].class);
     }
-
 }

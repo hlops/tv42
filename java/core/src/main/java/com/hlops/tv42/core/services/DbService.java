@@ -3,8 +3,6 @@ package com.hlops.tv42.core.services;
 import com.hlops.tv42.core.bean.Identifiable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,15 +13,13 @@ import java.util.Map;
  */
 public interface DbService {
 
+    boolean isInitDefaultValues();
+
     Map<String, ? extends Identifiable> get(@NotNull Entity entity);
 
-    void update(@NotNull Entity entity, @NotNull Collection<? extends Identifiable> values);
-
-    void update(@NotNull Entity entity, Identifiable... values);
+    void commit();
 
     void drop(@NotNull Entity entity);
-
-    void delete(@NotNull Entity entity, @NotNull List<? extends Identifiable> sources);
 
     enum Entity {
         sources, m3uChannels, m3uGroups, tvShowChannels, links

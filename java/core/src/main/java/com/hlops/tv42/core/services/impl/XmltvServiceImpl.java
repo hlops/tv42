@@ -1,6 +1,5 @@
 package com.hlops.tv42.core.services.impl;
 
-import com.hlops.tv42.core.bean.Identifiable;
 import com.hlops.tv42.core.bean.Source;
 import com.hlops.tv42.core.bean.TvShowChannel;
 import com.hlops.tv42.core.bean.TvShowItem;
@@ -33,17 +32,19 @@ import java.util.zip.GZIPInputStream;
  * Created by tom on 1/31/16.
  */
 @Service
-public class XmltvServiceImpl implements XmltvService {
+public class XmltvServiceImpl extends GenericServiceImpl<TvShowChannel> implements XmltvService {
 
     private static final long MAX_AGE = 1000 * 60 * 60 * 24 * 3;
 
     private static Logger log = LogManager.getLogger(XmltvServiceImpl.class);
 
     @Autowired
-    private DbService dbService;
-
-    @Autowired
     private SourceService sourceService;
+
+    @Override
+    protected DbService.Entity getEntity() {
+        return DbService.Entity.tvShowChannels;
+    }
 
     @Override
     public List<TvShowItem> findItems(TvShowChannel channel, long start, long stop, @Nullable String preferableSource) {
@@ -54,7 +55,7 @@ public class XmltvServiceImpl implements XmltvService {
             sources.addAll(sourceService.getOrderedSources(Source.SourceType.xmltv).stream().map(Source::getId).collect(Collectors.toList()));
         }
         for (String source : sources) {
-            if (channel.getSources().contains(source)) {
+            if (channel.getSources().containsKey(source)) {
                 List<TvShowItem> items = channel.getItems(source).stream().filter(tvShowItem ->
                         tvShowItem.getStart() <= stop && tvShowItem.getStop() >= start
                 ).collect(Collectors.toList());
@@ -68,18 +69,17 @@ public class XmltvServiceImpl implements XmltvService {
 
     @Override
     public TvShowChannel getChannelById(String id) {
-        return (TvShowChannel) dbService.get(DbService.Entity.tvShowChannels).get(id);
+        return get(id);
     }
 
     @Override
     public Collection<TvShowChannel> getChannels() {
-        //noinspection unchecked
-        return (Collection<TvShowChannel>) dbService.get(DbService.Entity.tvShowChannels).values();
+        return values();
     }
 
     @Override
     public void actualize(@NotNull Collection<TvShowChannel> channels) {
-        dbService.update(DbService.Entity.tvShowChannels, channels);
+        super.actualize(channels);
         deleteObsoleteItems();
     }
 
@@ -87,14 +87,14 @@ public class XmltvServiceImpl implements XmltvService {
         Set<TvShowChannel> modifiedChannels = new HashSet<>();
         long minimalTime = System.currentTimeMillis() - MAX_AGE;
         for (TvShowChannel channel : getChannels()) {
-            for (String source : channel.getSources()) {
+            for (String source : channel.getSources().keySet()) {
                 if (channel.getItems(source).removeAll(
                         channel.getItems(source).stream().filter(i -> i.getStart() < minimalTime).collect(Collectors.toList()))) {
                     modifiedChannels.add(channel);
                 }
             }
         }
-        dbService.update(DbService.Entity.tvShowChannels, modifiedChannels);
+        super.actualize(modifiedChannels);
     }
 
     private boolean isGZipStream(PushbackInputStream pushbackInputStream) throws IOException {
@@ -232,9 +232,16 @@ public class XmltvServiceImpl implements XmltvService {
         }
 
         @Override
-        public int read(byte[] b, int off, int len) throws IOException {
+        public int read(@NotNull byte[] b, int off, int len) throws IOException {
             return super.read(b, off, len);
         }
     }
 
+    public TvShowChannel combine(TvShowChannel value, TvShowChannel oldValue) throws CloneNotSupportedException {
+        for (String source : oldValue.getSources().keySet()) {
+            List<TvShowItem> items = value.getSources().computeIfAbsent(source, s -> new ArrayList<>());
+            items.addAll(oldValue.getItems(source));
+        }
+        return value.clone();
+    }
 }

@@ -3,6 +3,8 @@ package com.hlops.tv42.core.services.impl;
 import com.hlops.tv42.core.bean.Identifiable;
 import com.hlops.tv42.core.bean.Source;
 import com.hlops.tv42.core.services.DbService;
+import com.hlops.tv42.core.services.M3uChannelService;
+import com.hlops.tv42.core.services.SourceService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +28,12 @@ public class DbServiceImplTest extends Assert {
     @Autowired
     private DbServiceImpl dbService;
 
+    @Autowired
+    private M3UChannelServiceImpl m3uChannelService;
+
+    @Autowired
+    private SourceServiceImpl sourceService;
+
     @Before
     public void setUp() throws Exception {
         dbService.drop(DbService.Entity.sources);
@@ -34,7 +42,9 @@ public class DbServiceImplTest extends Assert {
 
     @Test
     public void testLoadDefaultValues() throws Exception {
-        dbService.loadDefaultValues();
+
+        sourceService.loadDefaultValues();
+        m3uChannelService.loadDefaultValues();
 
         Map<String, Identifiable> map = dbService.get(DbService.Entity.sources);
         assertEquals(2, map.size());

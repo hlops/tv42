@@ -5,7 +5,7 @@ import com.hlops.tv42.core.bean.Source;
 import com.hlops.tv42.core.bean.TvShowChannel;
 import com.hlops.tv42.core.bean.TvShowItem;
 import com.hlops.tv42.core.services.DbService;
-import com.hlops.tv42.core.services.M3uService;
+import com.hlops.tv42.core.services.M3uChannelService;
 import com.hlops.tv42.core.services.SourceService;
 import com.hlops.tv42.core.services.XmltvService;
 import org.junit.Assert;
@@ -20,6 +20,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,7 +39,7 @@ public class SourceServiceImplTest extends Assert {
     private SourceService sourceService;
 
     @Autowired
-    private M3uService m3uService;
+    private M3uChannelService m3UChannelService;
 
     @Autowired
     private XmltvService xmltvService;
@@ -73,7 +74,7 @@ public class SourceServiceImplTest extends Assert {
         assertTrue(sourceService.loadIfModified(source));
         assertTrue(lastModified - 1 < source.getLastModified());
 
-        Collection<M3uChannel> channels = m3uService.getChannels();
+        Collection<M3uChannel> channels = m3UChannelService.getChannels();
         assertEquals(159, channels.size());
     }
 
@@ -87,7 +88,7 @@ public class SourceServiceImplTest extends Assert {
         assertFalse(sourceService.loadIfModified(source));
         assertEquals(lastModified + 1, source.getLastModified());
 
-        Collection<M3uChannel> channels = m3uService.getChannels();
+        Collection<M3uChannel> channels = m3UChannelService.getChannels();
         assertEquals(0, channels.size());
     }
 
@@ -97,7 +98,7 @@ public class SourceServiceImplTest extends Assert {
         Source source = new Source("test", Source.SourceType.m3u, url);
         assertTrue(sourceService.load(source));
 
-        Collection<M3uChannel> channels = m3uService.getChannels();
+        Collection<M3uChannel> channels = m3UChannelService.getChannels();
         assertEquals(159, channels.size());
     }
 
@@ -116,4 +117,26 @@ public class SourceServiceImplTest extends Assert {
         }
     }
 
+    @Test
+    public void testLoadDefaultValues() throws Exception {
+
+        ((SourceServiceImpl) sourceService).loadDefaultValues();
+
+        Collection<Source> sources = sourceService.getOrderedSources(null);
+        assertEquals(2, sources.size());
+
+        Iterator<Source> it = sources.iterator();
+
+        Source source1 = it.next();
+        assertNotNull(source1);
+        assertEquals("source1", source1.getName());
+        assertEquals(Source.SourceType.m3u, source1.getType());
+        assertEquals("file:/playlist.m3u", source1.getUrl().toString());
+
+        Source source2 = it.next();
+        assertNotNull(source2);
+        assertEquals("source2", source2.getName());
+        assertEquals(Source.SourceType.xmltv, source2.getType());
+        assertEquals("file:/tvShow.zip", source2.getUrl().toString());
+    }
 }

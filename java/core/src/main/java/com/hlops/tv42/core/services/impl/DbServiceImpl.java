@@ -20,9 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.*;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -94,9 +92,6 @@ public class DbServiceImpl implements DbService {
                     .makeOrGet();
         }
 
-        if (initDefaultValues) {
-            loadDefaultValues();
-        }
     }
 
     @PreDestroy
@@ -108,43 +103,17 @@ public class DbServiceImpl implements DbService {
     }
 
     @Override
+    public boolean isInitDefaultValues() {
+        return initDefaultValues;
+    }
+
+    @Override
     public Map<String, Identifiable> get(@NotNull Entity entity) {
         return db.hashMap(entity.name());
     }
 
     @Override
-    public void update(@NotNull Entity entity, @NotNull Collection<? extends Identifiable> values) {
-        Map<String, Identifiable> map = get(entity);
-        for (Identifiable value : values) {
-            try {
-                Identifiable oldValue = map.get(value.getId());
-                if (oldValue == null) {
-                    map.put(value.getId(), value);
-                } else if (!value.equals(oldValue)) {
-                    //noinspection unchecked
-                    map.put(value.getId(), (Identifiable) value.combine(oldValue));
-                }
-            } catch (CloneNotSupportedException e) {
-                log.error(e.getMessage() + " for " + value.getClass(), e);
-            }
-        }
-        db.commit();
-    }
-
-    public void update(@NotNull Entity entity, Identifiable... values) {
-        if (values != null) {
-            update(entity, Arrays.asList(values));
-        }
-    }
-
-    @Override
-    public void delete(@NotNull Entity entity, @NotNull List<? extends Identifiable> list) {
-        Map<String, Identifiable> map = get(entity);
-        for (Identifiable value : list) {
-            if (value != null) {
-                map.remove(value.getId());
-            }
-        }
+    public void commit() {
         db.commit();
     }
 
@@ -154,23 +123,4 @@ public class DbServiceImpl implements DbService {
         db.commit();
     }
 
-    public void loadDefaultValues() {
-        // todo
-        loadDefaultValues(Entity.sources, Source[].class);
-        loadDefaultValues(Entity.m3uChannels, M3uChannel[].class);
-    }
-
-    protected void loadDefaultValues(Entity entity, Class<? extends Identifiable[]> clz) {
-        InputStream resourceStream = getClass().getResourceAsStream("/default." + entity.name() + ".json");
-        if (resourceStream != null) {
-            try (BufferedReader resourceReader = new BufferedReader(new InputStreamReader(resourceStream))) {
-
-                GsonBuilder builder = new GsonBuilder();
-                Gson gson = builder.create();
-                update(entity, gson.fromJson(resourceReader, clz));
-            } catch (IOException e) {
-                log.error("Unable to load default values for " + entity.name(), e);
-            }
-        }
-    }
 }

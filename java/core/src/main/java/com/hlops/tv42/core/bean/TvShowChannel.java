@@ -46,8 +46,8 @@ public class TvShowChannel implements Identifiable<TvShowChannel> {
         this.icon = icon;
     }
 
-    public Set<String> getSources() {
-        return sources.keySet();
+    public Map<String, List<TvShowItem>> getSources() {
+        return sources;
     }
 
     public List<TvShowItem> getItems(String source) {
@@ -58,15 +58,6 @@ public class TvShowChannel implements Identifiable<TvShowChannel> {
     @Override
     public TvShowChannel clone() throws CloneNotSupportedException {
         return (TvShowChannel) super.clone();
-    }
-
-    @Override
-    public TvShowChannel combine(TvShowChannel oldChannel) throws CloneNotSupportedException {
-        for (String source: oldChannel.getSources()) {
-            List<TvShowItem> items = sources.computeIfAbsent(source, s -> new ArrayList<>());
-            items.addAll(oldChannel.getItems(source));
-        }
-        return clone();
     }
 
 }

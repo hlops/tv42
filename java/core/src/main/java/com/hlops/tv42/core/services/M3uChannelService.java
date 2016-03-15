@@ -15,11 +15,9 @@ import java.util.List;
  * Date: 1/12/16
  * Time: 7:33 PM
  */
-public interface M3uService {
+public interface M3uChannelService {
 
     Collection<M3uChannel> getChannels();
-
-    Collection<M3uGroup> getGroups();
 
     void actualize(@NotNull Collection<M3uChannel> channels);
 

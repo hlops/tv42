@@ -6,7 +6,7 @@ import com.google.gson.stream.JsonWriter;
 import com.hlops.tv42.core.bean.Link;
 import com.hlops.tv42.core.bean.TvShowChannel;
 import com.hlops.tv42.core.services.LinkService;
-import com.hlops.tv42.core.services.M3uService;
+import com.hlops.tv42.core.services.M3uChannelService;
 import com.hlops.tv42.core.services.XmltvService;
 import com.hlops.tv42.webService.bean.LinkVO;
 import com.hlops.tv42.webService.bean.TvShowChannelVO;
@@ -34,7 +34,7 @@ public class LinksResource {
     private LinkService linkService;
 
     @Autowired
-    private M3uService m3uService;
+    private M3uChannelService m3UChannelService;
 
     @Autowired
     private XmltvService xmltvService;
@@ -57,7 +57,7 @@ public class LinksResource {
     @RequestMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
     @ResponseBody
     public void save(@RequestBody LinkVO link) throws IOException {
-        linkService.update(Collections.singletonList(link.toLink()));
+        linkService.actualize(Collections.singletonList(link.toLink()));
     }
 
     @RequestMapping(value = "channels", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)

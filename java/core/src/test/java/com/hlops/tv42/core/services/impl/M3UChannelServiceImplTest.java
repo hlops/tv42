@@ -2,7 +2,7 @@ package com.hlops.tv42.core.services.impl;
 
 import com.hlops.tv42.core.bean.M3uChannel;
 import com.hlops.tv42.core.services.DbService;
-import com.hlops.tv42.core.services.M3uService;
+import com.hlops.tv42.core.services.M3uChannelService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,13 +26,13 @@ import java.util.List;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/test-spring-config.xml"})
-public class M3uServiceImplTest extends Assert {
+public class M3UChannelServiceImplTest extends Assert {
 
     @Autowired
     private DbService dbService;
 
     @Autowired
-    private M3uService m3uService;
+    private M3uChannelService m3UChannelService;
 
     @Before
     public void setUp() throws Exception {
@@ -43,7 +43,7 @@ public class M3uServiceImplTest extends Assert {
     public void testLoad() throws Exception {
         InputStream inputStream = getClass().getResourceAsStream("/playlist.m3u");
         assertNotNull(inputStream);
-        List<M3uChannel> channels = m3uService.load("test", 101, new BufferedReader(new InputStreamReader(inputStream)));
+        List<M3uChannel> channels = m3UChannelService.load("test", 101, new BufferedReader(new InputStreamReader(inputStream)));
         assertNotNull(channels);
         assertEquals(160, channels.size());
 
@@ -90,10 +90,10 @@ public class M3uServiceImplTest extends Assert {
             m3uChannels.add(new M3uChannel("channel2", "test1", 0));
             m3uChannels.add(new M3uChannel("channel3", "test2", 0));
             m3uChannels.add(new M3uChannel("channel4", "test2", 0));
-            m3uService.actualize(m3uChannels);
+            m3UChannelService.actualize(m3uChannels);
 
             //noinspection unchecked
-            Collection<M3uChannel> channels = m3uService.getChannels();
+            Collection<M3uChannel> channels = m3UChannelService.getChannels();
             assertEquals(5, channels.size());
             channels.stream().forEach(p -> assertEquals(true, p.isActual()));
         }
@@ -103,10 +103,10 @@ public class M3uServiceImplTest extends Assert {
             m3uChannels.add(new M3uChannel("channel1", "test1", -1));
             m3uChannels.add(new M3uChannel("channel2", "test2", 10));
             m3uChannels.add(new M3uChannel("channel3", "test3", -1));
-            m3uService.actualize(m3uChannels);
+            m3UChannelService.actualize(m3uChannels);
 
             //noinspection unchecked
-            Collection<M3uChannel> channels = m3uService.getChannels();
+            Collection<M3uChannel> channels = m3UChannelService.getChannels();
             assertEquals(5, channels.size());
             channels.stream().filter(p -> p.getName().equals("channel0")).forEach(
                     p -> {
@@ -143,6 +143,21 @@ public class M3uServiceImplTest extends Assert {
                     }
             );
         }
+    }
+
+    @Test
+    public void testLoadDefaultValues() throws Exception {
+        ((M3UChannelServiceImpl) m3UChannelService).loadDefaultValues();
+        Collection<M3uChannel> channels = m3UChannelService.getChannels();
+        assertEquals(1, channels.size());
+
+        M3uChannel channel = channels.iterator().next();
+        assertEquals("channel1", channel.getName());
+        assertEquals("source1", channel.getSource());
+        assertEquals(20, channel.getSourceWeight());
+        assertEquals("udp://@239.1.15.1:1234", channel.getUrl());
+        assertEquals("group1", channel.getGroup());
+        assertEquals("100", channel.getTvgName());
     }
 
 }

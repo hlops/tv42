@@ -42,11 +42,6 @@ public class M3uGroup implements Identifiable<M3uGroup> {
     }
 
     @Override
-    public M3uGroup combine(M3uGroup oldValue) throws CloneNotSupportedException {
-        return clone();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof M3uGroup)) return false;

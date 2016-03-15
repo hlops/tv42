@@ -17,6 +17,4 @@ public interface Identifiable<T> extends Serializable, Cloneable {
 
     T clone() throws CloneNotSupportedException;
 
-    T combine(T oldValue) throws CloneNotSupportedException;
-
 }

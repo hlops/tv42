@@ -11,10 +11,12 @@ import java.util.Collection;
  */
 public interface LinkService {
 
-    Collection<Link> getLinks();
-
     @Nullable
     Link getLink(String channelName);
 
-    void update(@NotNull Collection<Link> links);
+    Collection<Link> getLinks();
+
+    void actualize(@NotNull Collection<Link> links);
+
+    void actualizeLinks();
 }

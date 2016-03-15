@@ -76,11 +76,6 @@ public class Link implements Identifiable<Link> {
     }
 
     @Override
-    public Link combine(Link oldValue) throws CloneNotSupportedException {
-        return clone();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

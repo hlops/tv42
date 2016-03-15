@@ -2,7 +2,7 @@ package com.hlops.tv42.webService;
 
 import com.google.gson.stream.JsonWriter;
 import com.hlops.tv42.core.bean.M3uGroup;
-import com.hlops.tv42.core.services.M3uService;
+import com.hlops.tv42.core.services.M3uGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +21,7 @@ import java.io.Writer;
 public class GroupResource {
 
     @Autowired
-    private M3uService m3uService;
+    private M3uGroupService m3uGroupService;
 
     @RequestMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
     @ResponseBody
@@ -30,7 +30,7 @@ public class GroupResource {
         JsonWriter jsonWriter = new JsonWriter(responseWriter);
         jsonWriter.beginArray();
 
-        for (M3uGroup group : m3uService.getGroups()) {
+        for (M3uGroup group : m3uGroupService.getGroups()) {
             jsonWriter.value(group.getName());
         }
         jsonWriter.endArray();

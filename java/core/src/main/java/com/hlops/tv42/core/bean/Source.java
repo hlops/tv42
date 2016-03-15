@@ -68,11 +68,6 @@ public class Source implements Identifiable<Source>, Comparable<Source> {
     }
 
     @Override
-    public Source combine(Source oldValue) throws CloneNotSupportedException {
-        return clone();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

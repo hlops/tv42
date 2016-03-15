@@ -1,0 +1,10 @@
+[
+  {
+    "name": "channel1",
+    "source": "source1",
+    "sourceWeight": 20,
+    "url": "udp://@239.1.15.1:1234",
+    "group": "group1",
+    "tvgName": "100"
+  }
+]

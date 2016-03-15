@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import com.hlops.tv42.core.bean.M3uChannel;
-import com.hlops.tv42.core.services.M3uService;
+import com.hlops.tv42.core.services.M3uChannelService;
 import com.hlops.tv42.core.services.SourceService;
 import com.hlops.tv42.webService.bean.ChannelVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class ChannelResource {
     static GsonBuilder gsonBuilder = new GsonBuilder();
 
     @Autowired
-    private M3uService m3uService;
+    private M3uChannelService m3UChannelService;
 
     @Autowired
     private SourceService sourceService;
@@ -40,7 +40,7 @@ public class ChannelResource {
         JsonWriter jsonWriter = new JsonWriter(responseWriter);
         jsonWriter.beginArray();
 
-        for (M3uChannel channel : m3uService.getChannels()) {
+        for (M3uChannel channel : m3UChannelService.getChannels()) {
             gson.toJson(new ChannelVO(channel, sourceService.getSource(channel.getSource()).getName()), ChannelVO.class, jsonWriter);
         }
         jsonWriter.endArray();

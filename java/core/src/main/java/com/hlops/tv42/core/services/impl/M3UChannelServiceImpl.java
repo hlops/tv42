@@ -1,10 +1,9 @@
 package com.hlops.tv42.core.services.impl;
 
 import com.hlops.tv42.core.bean.M3uChannel;
-import com.hlops.tv42.core.bean.M3uGroup;
 import com.hlops.tv42.core.services.DbService;
-import com.hlops.tv42.core.services.LinkService;
-import com.hlops.tv42.core.services.M3uService;
+import com.hlops.tv42.core.services.M3uGroupService;
+import com.hlops.tv42.core.services.M3uChannelService;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -22,24 +23,19 @@ import java.util.stream.Collectors;
  * Time: 7:34 PM
  */
 @Service
-public class M3uServiceImpl implements M3uService {
+public class M3UChannelServiceImpl extends GenericServiceImpl<M3uChannel> implements M3uChannelService {
 
     @Autowired
-    private DbService dbService;
-
-    @Autowired
-    private LinkService linkService;
+    private M3uGroupService groupService;
 
     @Override
-    public Collection<M3uChannel> getChannels() {
-        //noinspection unchecked
-        return (Collection<M3uChannel>) dbService.get(DbService.Entity.m3uChannels).values();
+    protected DbService.Entity getEntity() {
+        return DbService.Entity.m3uChannels;
     }
 
     @Override
-    public Collection<M3uGroup> getGroups() {
-        //noinspection unchecked
-        return (Collection<M3uGroup>) dbService.get(DbService.Entity.m3uGroups).values();
+    public Collection<M3uChannel> getChannels() {
+        return values();
     }
 
     @Override
@@ -48,21 +44,11 @@ public class M3uServiceImpl implements M3uService {
         List<M3uChannel> sourceChannels = getChannels().stream().filter(p -> sources.contains(p.getSource())).collect(Collectors.toList());
         sourceChannels.forEach(p -> p.setActual(false));
         sourceChannels.addAll(channels);
+        super.actualize(sourceChannels);
 
-        actualizeGroups(channels);
+        groupService.actualizeGroups(channels);
         actualizeLinks(channels);
-        dbService.update(DbService.Entity.m3uChannels, sourceChannels);
-    }
-
-    private void actualizeGroups(@NotNull Collection<M3uChannel> channels) {
-        for (M3uChannel channel : channels) {
-            String groupName = channel.getGroup();
-            //noinspection unchecked
-            Map<String, M3uGroup> stringMap = (Map<String, M3uGroup>) dbService.get(DbService.Entity.m3uGroups);
-            if (groupName != null) {
-                stringMap.computeIfAbsent(groupName, p -> new M3uGroup(groupName));
-            }
-        }
+        commit();
     }
 
     private void actualizeLinks(@NotNull Collection<M3uChannel> channels) {
@@ -126,4 +112,27 @@ public class M3uServiceImpl implements M3uService {
         return channels;
     }
 
+    @Override
+    protected M3uChannel combine(M3uChannel value, M3uChannel oldValue) throws CloneNotSupportedException {
+        if (oldValue.getSource().equals(value.getSource())) {
+            return value.clone();
+        } else {
+            boolean isOldValueUsed = oldValue.getSourceWeight() > value.getSourceWeight();
+            if (oldValue.getSourceWeight() == value.getSourceWeight()) {
+                isOldValueUsed = oldValue.getSource().compareTo(value.getSource()) >= 0;
+            }
+            if (isOldValueUsed) {
+                return oldValue;
+            } else {
+                M3uChannel newValue = value.clone();
+                newValue.setCreated(oldValue.getCreated());
+                return newValue;
+            }
+        }
+    }
+
+    @Override
+    protected void loadDefaultValues() {
+        loadDefaultValues(M3uChannel[].class);
+    }
 }
