@@ -10,7 +10,7 @@
                   md-ink-ripple
                   ng-repeat="link in links = (linksCtrl.model.links | filter:appCtrl.model.isSearch ? appCtrl.model.search:'')"
                   ng-click="linksCtrl.edit(link)"
-            >
+    >
         <div class="md-list-item-text" flex layout="column">
             <h3>{{ link.channel }} </h3>
 
@@ -48,7 +48,7 @@
                 <md-autocomplete
                         md-floating-label="Телепрограмма"
                         md-selected-item="linksCtrl.model.editLink.tvShowName"
-                        md-selected-item-change="linksCtrl.itemSelected(channel)"
+                        md-selected-item-change="linksCtrl.channelSelected(channel)"
                         md-search-text="linksCtrl.model.autocomplete.tvShowSearch"
                         md-items="channel in linksCtrl.model.tvShowChannels | filter:{name:linksCtrl.model.autocomplete.tvShowSearch}"
                         md-item-text="channel.name"
@@ -65,11 +65,21 @@
                     <input type="text" id="form-links-source" ng-model="linksCtrl.model.editLink.source"
                            ng-required="false">
                 </md-input-container>
-                <md-input-container>
-                    <label for="form-links-url">Группа</label>
-                    <input type="text" id="form-links-url" ng-model="linksCtrl.model.editLink.group"
-                           ng-required="false">
-                </md-input-container>
+                <md-autocomplete
+                        md-floating-label="Группа"
+                        md-selected-item="linksCtrl.model.editLink.group"
+                        md-selected-item-change="linksCtrl.groupSelected(group)"
+                        md-search-text="linksCtrl.model.autocomplete.groupSearch"
+                        md-items="group in linksCtrl.getGroups() | filter:linksCtrl.model.autocomplete.groupSearch"
+                        md-item-text="group"
+                        md-min-length="0"
+                        ng-required="false">
+                    <md-item-template>
+                      <span class="item-title">
+                        <span> {{group}} </span>
+                      </span>
+                    </md-item-template>
+                </md-autocomplete>
                 <md-input-container>
                     <label for="form-links-shift">Сдвиг</label>
 

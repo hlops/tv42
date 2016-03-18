@@ -48,7 +48,7 @@ export default class LinksController extends CommonPageController {
         });
   }
 
-  itemSelected(channel) {
+  channelSelected(channel) {
     if (channel) {
       this.model.editLink.tvShow = channel.id;
     }
@@ -59,8 +59,9 @@ export default class LinksController extends CommonPageController {
   }
 
   edit(link) {
-    this.model.autocomplete.tvShowSearch = undefined;
+    this.model.autocomplete = {};
     this.model.editLink = angular.extend({}, link);
+    console.log(this.model.editLink)
     this.model.rightPanelVisible = true;
   }
 
@@ -71,6 +72,7 @@ export default class LinksController extends CommonPageController {
 
   save() {
     var link = this.model.editLink;
+    console.log(link)
     this.tvService.saveLink(link);
     for (var i = 0; i < this.model.links.length; i++) {
       if (this.model.links[i].channel === link.channel) {
@@ -91,6 +93,16 @@ export default class LinksController extends CommonPageController {
       } else {
         this.model.editLink.shift = value;
       }
+    }
+  }
+
+  getGroups() {
+    return this.tvService.model.groups;
+  }
+
+  groupSelected(group) {
+    if (group) {
+      this.model.editLink.group = group;
     }
   }
 
