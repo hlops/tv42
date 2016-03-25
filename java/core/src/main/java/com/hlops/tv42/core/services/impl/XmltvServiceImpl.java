@@ -200,25 +200,16 @@ public class XmltvServiceImpl extends GenericServiceImpl<TvShowChannel> implemen
         return TimeFormatter.parse(attr.getValue());
     }
 
+    private String peelChannelName(String name) {
+        return name.toLowerCase().replaceAll("(канал)|(тв)|(\\(.*\\))|([\\s-\\+])", "");
+    }
+
     @Override
     @Nullable
     public TvShowChannel matchByName(@NotNull String name) {
+        String peelName = peelChannelName(name);
         for (TvShowChannel channel : getChannels()) {
-            String channelName = channel.getName().toLowerCase().trim();
-
-            if (name.equalsIgnoreCase(channelName)) {
-                return channel;
-            }
-
-            if (name.equalsIgnoreCase(channelName.replaceAll("\\s+канал", ""))) {
-                return channel;
-            }
-
-            if (name.equalsIgnoreCase(channelName.replaceAll("\\s+тв", ""))) {
-                return channel;
-            }
-
-            if (name.replaceAll("[\\s-]", "").equalsIgnoreCase(channelName.replaceAll("[\\s-]", ""))) {
+            if (peelName.equals(peelChannelName(channel.getName()))) {
                 return channel;
             }
         }
@@ -235,6 +226,7 @@ public class XmltvServiceImpl extends GenericServiceImpl<TvShowChannel> implemen
         public int read(@NotNull byte[] b, int off, int len) throws IOException {
             return super.read(b, off, len);
         }
+
     }
 
     public TvShowChannel combine(TvShowChannel value, TvShowChannel oldValue) throws CloneNotSupportedException {

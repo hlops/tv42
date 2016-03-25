@@ -2,19 +2,23 @@ package com.hlops.tv42.core.services.impl;
 
 import com.hlops.tv42.core.bean.M3uChannel;
 import com.hlops.tv42.core.services.DbService;
-import com.hlops.tv42.core.services.M3uGroupService;
 import com.hlops.tv42.core.services.M3uChannelService;
+import com.hlops.tv42.core.services.M3uGroupService;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,6 +28,9 @@ import java.util.stream.Collectors;
  */
 @Service
 public class M3UChannelServiceImpl extends GenericServiceImpl<M3uChannel> implements M3uChannelService {
+
+    @Value("${M3U-UDP-HTTP-PROXY-PREFIX:http://192.168.1.1:4000/udp}")
+    private String UDP_HTTP_PROXY_PREFIX;
 
     @Autowired
     private M3uGroupService groupService;
@@ -36,6 +43,17 @@ public class M3UChannelServiceImpl extends GenericServiceImpl<M3uChannel> implem
     @Override
     public Collection<M3uChannel> getChannels() {
         return values();
+    }
+
+    @Override
+    public Collection<M3uChannel> getOrderedChannels() {
+        Stream<M3uChannel> stream = values().stream();
+        return stream.sorted().collect(Collectors.toList());
+    }
+
+    @Override
+    public M3uChannel getChannelById(String id) {
+        return get(id);
     }
 
     @Override
@@ -110,6 +128,48 @@ public class M3UChannelServiceImpl extends GenericServiceImpl<M3uChannel> implem
             reader.close();
         }
         return channels;
+    }
+
+    @Override
+    public void writeChannels(Writer responseWriter, Collection<M3uChannel> channels) throws IOException {
+        BufferedWriter writer = new BufferedWriter(responseWriter);
+
+        writer.write("#EXTM3U m3uautoload=0 deinterlace=1 aspect-ratio=4:3");
+        writer.newLine();
+
+        String currentGroup = "";
+        for (M3uChannel channel : channels) {
+            writer.write("#EXTINF:-1");
+            if (StringUtils.isNotEmpty(channel.getTvgName())) {
+                writer.write(" tvg-name=" + channel.getTvgName());
+            }
+            if (channel.getAttributes().contains(M3uChannel.ChannelAttribute.WIDE)) {
+                writer.write(" aspect-ratio=16:9");
+            }
+            if (channel.getAttributes().contains(M3uChannel.ChannelAttribute.HD)) {
+                writer.write(" crop=1920x1080+0+0");
+            }
+
+            if (!currentGroup.equals(channel.getGroup())) {
+                currentGroup = channel.getGroup();
+                writer.write(" group-title=\"" + currentGroup + "\"");
+            }
+
+            writer.write(", " + channel.getName());
+            writer.newLine();
+
+            writer.write(modifyUrl(channel.getUrl()));
+            writer.newLine();
+            writer.newLine();
+        }
+        writer.flush();
+    }
+
+    public String modifyUrl(String url) {
+        if (url.startsWith("udp://")) {
+            return UDP_HTTP_PROXY_PREFIX + url.substring(7);
+        }
+        return url;
     }
 
     @Override

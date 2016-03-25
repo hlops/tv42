@@ -12,13 +12,16 @@ export default class SourcesController extends CommonPageController {
     this.tvService = tvService;
     this.$location = $location;
 
-    this.model = {
+    this.init($scope);
+  }
+
+  createModel() {
+    return {
+      caption: 'Источники',
       sources: [],
       rightPanelVisible: false,
       editSource: undefined
     };
-
-    this.init($scope);
   }
 
   init($scope) {

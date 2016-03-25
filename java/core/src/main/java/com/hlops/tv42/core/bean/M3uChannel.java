@@ -11,7 +11,7 @@ import java.util.Set;
  * Date: 1/13/16
  * Time: 11:35 AM
  */
-public class M3uChannel implements Identifiable<M3uChannel> {
+public class M3uChannel implements Identifiable<M3uChannel>, Comparable<M3uChannel> {
 
     private final String name;
     private final String source;
@@ -133,6 +133,20 @@ public class M3uChannel implements Identifiable<M3uChannel> {
 
     public void setCreated(long created) {
         this.created = created;
+    }
+
+    @Override
+    public int compareTo(M3uChannel o) {
+        if (getGroup() != null) {
+            if (o.getGroup() != null) {
+                if (!getGroup().equals(o.getGroup())) {
+                    return getGroup().compareTo(o.getGroup());
+                }
+            } else {
+                return -1;
+            }
+        }
+        return getName().compareTo(o.getName());
     }
 
     public enum ChannelAttribute {

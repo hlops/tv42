@@ -1,0 +1,10 @@
+[
+  {
+    "m3uChannel": "погода",
+    "tvShowChannel": "100",
+    "source": "ngs",
+    "group": "Погода",
+    "timeshift": "-3",
+    "active": false
+  }
+]

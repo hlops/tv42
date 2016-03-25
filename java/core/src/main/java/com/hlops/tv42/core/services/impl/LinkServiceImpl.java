@@ -69,4 +69,8 @@ public class LinkServiceImpl extends GenericServiceImpl<Link> implements LinkSer
         }
     }
 
+    @Override
+    protected void loadDefaultValues() {
+        loadDefaultValues(Link[].class);
+    }
 }

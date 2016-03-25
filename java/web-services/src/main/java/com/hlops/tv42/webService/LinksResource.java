@@ -31,10 +31,10 @@ public class LinksResource {
     static GsonBuilder gsonBuilder = new GsonBuilder();
 
     @Autowired
-    private LinkService linkService;
+    private M3uChannelService m3uChannelService;
 
     @Autowired
-    private M3uChannelService m3UChannelService;
+    private LinkService linkService;
 
     @Autowired
     private XmltvService xmltvService;
@@ -47,8 +47,26 @@ public class LinksResource {
         JsonWriter jsonWriter = new JsonWriter(responseWriter);
         jsonWriter.beginArray();
         for (Link link : linkService.getLinks()) {
-            // todo
-            gson.toJson(new LinkVO(link, null), LinkVO.class, jsonWriter);
+            // todo: source is null
+            LinkVO src = new LinkVO(link, null);
+            if (src.getGroup() == null) {
+                src.setGroup(m3uChannelService.getChannelById(link.getM3uChannel()).getGroup());
+            }
+            gson.toJson(src, LinkVO.class, jsonWriter);
+        }
+        jsonWriter.endArray();
+        jsonWriter.close();
+    }
+
+    @RequestMapping(path = "raw", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
+    @ResponseBody
+    public void listRaw(Writer responseWriter) throws IOException {
+
+        Gson gson = gsonBuilder.create();
+        JsonWriter jsonWriter = new JsonWriter(responseWriter);
+        jsonWriter.beginArray();
+        for (Link link : linkService.getLinks()) {
+            gson.toJson(link, Link.class, jsonWriter);
         }
         jsonWriter.endArray();
         jsonWriter.close();
@@ -68,6 +86,7 @@ public class LinksResource {
         jsonWriter.beginArray();
 
         for (TvShowChannel channel : xmltvService.getChannels()) {
+            // todo: source is null
             TvShowChannelVO tvShow = new TvShowChannelVO(channel, null);
             gson.toJson(tvShow, TvShowChannelVO.class, jsonWriter);
         }

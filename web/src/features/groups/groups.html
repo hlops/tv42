@@ -1,5 +1,4 @@
 <md-list>
-    <md-subheader class="md-no-sticky">Группы ({{groups.length}})</md-subheader>
     <md-list-item class="md-2-line md-clickable"
                   md-ink-ripple
                   ng-repeat="group in groups = (groupsCtrl.getGroups() | filter:appCtrl.model.isSearch ? appCtrl.model.search:'')"

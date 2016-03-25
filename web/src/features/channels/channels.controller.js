@@ -9,11 +9,14 @@ export default class ChannelsController extends CommonPageController {
     super($scope, name);
     this.tvService = tvService;
 
-    this.model = {
+    this.init($scope);
+  }
+
+  createModel() {
+    return {
+      caption: 'Каналы',
       channels: []
     };
-
-    this.init($scope);
   }
 
   init($scope) {

@@ -31,6 +31,10 @@ class tvService {
     return this.$http.get('/rest/channels');
   }
 
+  getChannelNames() {
+    return this.$http.get('/rest/channels/names');
+  }
+
   getLinks() {
     return this.$http.get('/rest/links');
   }

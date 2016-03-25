@@ -2,9 +2,6 @@
 
 export default class AppController {
   constructor($scope, $mdSidenav, tvService) {
-    this.model = {
-      currentMenuItem: undefined
-    };
     this.$mdSidenav = $mdSidenav;
     this.tvService = tvService;
 
@@ -16,7 +13,7 @@ export default class AppController {
   }
 
   isActiveMenuItem(item) {
-    return this.model.currentMenuItem === item;
+    return this.model && this.model.currentMenuItem === item;
   }
 
   toggleSidenav(id) {

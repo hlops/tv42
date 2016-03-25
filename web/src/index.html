@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title>Test</title>
+    <title>Телепрограмма</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Forum&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
     <base href="/">
@@ -38,7 +38,7 @@
                     <md-icon md-font-set="material-icons">menu</md-icon>
                 </md-button>
                 <h1 ng-class="{'hide show-gt-sm': appCtrl.model.isSearch}">
-                    <span>Телепрограмма</span>
+                    <span>{{appCtrl.model.caption}}</span>
                     <span></span>
                 </h1>
                 <span flex ng-if="!appCtrl.model.isSearch"></span>
@@ -50,11 +50,13 @@
                         <input placeholder="поиск" flex
                                autofocus="autofocus" model-type="search"
                                ng-model="appCtrl.model.search"/>
-                        <md-button class="md-icon-button" ng-click="appCtrl.model.isSearch=false; appCtrl.model.search=''">
+                        <md-button class="md-icon-button"
+                                   ng-click="appCtrl.model.isSearch=false; appCtrl.model.search=''">
                             <md-icon class="material-icons">close</md-icon>
                         </md-button>
                     </div>
                 </div>
+                <tv-placeholder id="place-for-actions"></tv-placeholder>
                 <tv-placeholder id="place-for-header-fab"></tv-placeholder>
             </div>
         </md-toolbar>

@@ -12,10 +12,10 @@ public class LinkVO implements Serializable {
 
     private final String channel;
     private final String tvShow;
-    private final String group;
     private final Short shift;
     private final Boolean active;
     private final String source;
+    private String group;
 
     public LinkVO(@NotNull Link link, String source) {
         this.source = source;
@@ -36,6 +36,10 @@ public class LinkVO implements Serializable {
 
     public String getGroup() {
         return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
     }
 
     public Short getShift() {

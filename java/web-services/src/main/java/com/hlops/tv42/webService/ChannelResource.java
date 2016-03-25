@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Collection;
 
 /**
  * Created by tom on 1/29/16.
@@ -45,6 +46,27 @@ public class ChannelResource {
         }
         jsonWriter.endArray();
         jsonWriter.close();
+    }
+
+    @RequestMapping(path = "names", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
+    @ResponseBody
+    public void listNames(Writer responseWriter) throws IOException {
+
+        JsonWriter jsonWriter = new JsonWriter(responseWriter);
+        jsonWriter.beginArray();
+
+        for (M3uChannel channel : m3UChannelService.getChannels()) {
+            jsonWriter.value(channel.getId());
+        }
+        jsonWriter.endArray();
+        jsonWriter.close();
+    }
+
+    @RequestMapping(path = "m3u", produces = MediaType.TEXT_PLAIN_VALUE, method = RequestMethod.GET)
+    @ResponseBody
+    public void m3u(Writer responseWriter) throws IOException {
+        Collection<M3uChannel> channels = m3UChannelService.getOrderedChannels();
+        m3UChannelService.writeChannels(responseWriter, channels);
     }
 
 }

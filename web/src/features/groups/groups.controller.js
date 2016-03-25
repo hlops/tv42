@@ -6,12 +6,16 @@ const name = 'groups';
 
 export default class GroupsController extends CommonPageController {
   constructor($scope, tvService) {
-    super($scope, name);
+    super($scope, name, {});
     this.tvService = tvService;
 
-    this.model = {};
-
     this.init($scope);
+  }
+
+  createModel() {
+    return {
+      caption: 'Группы'
+    };
   }
 
   init($scope) {

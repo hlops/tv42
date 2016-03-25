@@ -4,25 +4,56 @@
     <md-tooltip md-direction="right">Новая связь</md-tooltip>
 </md-button>
 
-<md-list>
-    <md-subheader class="md-no-sticky">Связи ({{links.length}})</md-subheader>
-    <md-list-item class="md-2-line md-clickable"
-                  md-ink-ripple
-                  ng-repeat="link in links = (linksCtrl.model.links | filter:appCtrl.model.isSearch ? appCtrl.model.search:'')"
-                  ng-click="linksCtrl.edit(link)"
-    >
-        <div class="md-list-item-text" flex layout="column">
-            <h3>{{ link.channel }} </h3>
+<md-menu tv-move-to-parent="#place-for-actions">
+    <md-button class="md-icon-button" ng-click="$mdOpenMenu($event)">
+        <md-icon class="material-icons">more_vert</md-icon>
+    </md-button>
+    <md-menu-content>
+        <md-menu-item>
+            <md-button ng-click="linksCtrl.download()">
+                <md-icon class="material-icons">file_download</md-icon>
+                Выгрузить
+            </md-button>
+        </md-menu-item>
+    </md-menu-content>
+</md-menu>
 
-            <p> {{ link.tvShowName }} </p>
+<md-tabs md-dynamic-height md-border-bottom>
+    <md-tab label="Назначенные ({{links.length}})" ng-disabled="!links.length">
+        <md-list>
+            <md-list-item class="md-2-line md-clickable"
+                          md-ink-ripple
+                          ng-repeat="link in links = (linksCtrl.model.links | filter:appCtrl.model.isSearch ? appCtrl.model.search:'')"
+                          ng-click="linksCtrl.edit(link)"
+            >
+                <div class="md-list-item-text" flex layout="column">
+                    <h3>{{ link.channel }} </h3>
 
-            <p> {{ link.group }} </p>
+                    <p> {{ link.tvShowName }} </p>
 
-            <p> {{ link.timesift }} </p>
-        </div>
-        <md-divider></md-divider>
-    </md-list-item>
-</md-list>
+                    <p> {{ link.group }} </p>
+
+                    <p> {{ link.timesift }} </p>
+                </div>
+                <md-divider></md-divider>
+            </md-list-item>
+        </md-list>
+    </md-tab>
+    <md-tab label="Новые ({{prelinks.length}})" ng-disabled="!prelinks.length">
+        <md-list>
+            <md-list-item class="md-2-line md-clickable"
+                          md-ink-ripple
+                          ng-repeat="prelink in prelinks = (linksCtrl.model.prelinks | filter:appCtrl.model.isSearch ? appCtrl.model.search:'')"
+                          ng-click="linksCtrl.add(prelink)"
+            >
+                <div class="md-list-item-text" flex layout="column">
+                    <h3>{{ prelink }} </h3>
+                </div>
+                <md-divider></md-divider>
+            </md-list-item>
+        </md-list>
+    </md-tab>
+</md-tabs>
 
 <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-is-open="linksCtrl.model.rightPanelVisible"
             tv-move-to-parent="#place-for-sidenav">
@@ -45,6 +76,11 @@
                     <input type="text" id="form-links-channel" ng-model="linksCtrl.model.editLink.channel"
                            ng-required="true">
                 </md-input-container>
+                <md-input-container>
+                    <label for="form-links-source">Источник</label>
+                    <input type="text" id="form-links-source" ng-model="linksCtrl.model.editLink.source"
+                           ng-required="false">
+                </md-input-container>
                 <md-autocomplete
                         md-floating-label="Телепрограмма"
                         md-selected-item="linksCtrl.model.editLink.tvShowName"
@@ -60,11 +96,6 @@
                       </span>
                     </md-item-template>
                 </md-autocomplete>
-                <md-input-container>
-                    <label for="form-links-source">Источник</label>
-                    <input type="text" id="form-links-source" ng-model="linksCtrl.model.editLink.source"
-                           ng-required="false">
-                </md-input-container>
                 <md-autocomplete
                         md-floating-label="Группа"
                         md-selected-item="linksCtrl.model.editLink.group"

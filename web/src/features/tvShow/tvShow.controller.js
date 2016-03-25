@@ -9,11 +9,14 @@ export default class TvShowController extends CommonPageController {
     super($scope, name);
     this.tvService = tvService;
 
-    this.model = {
+    this.init($scope);
+  }
+
+  createModel() {
+    return {
+      caption: 'Программа передач',
       channels: []
     };
-
-    this.init($scope);
   }
 
   init($scope) {
