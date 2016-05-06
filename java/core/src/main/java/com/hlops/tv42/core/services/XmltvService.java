@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,5 +28,7 @@ public interface XmltvService {
 
     @Nullable
     TvShowChannel matchByName(@NotNull String name);
+
+    void save(Collection<TvShowChannel> channels, @NotNull String source, OutputStream outputStream) throws IOException;
 
 }

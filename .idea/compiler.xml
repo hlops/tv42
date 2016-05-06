@@ -24,26 +24,14 @@
         <processorPath useClasspath="true" />
         <module name="services" />
       </profile>
-      <profile default="false" name="Annotation profile for web-services" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
-        <module name="web-services" />
-      </profile>
-      <profile default="false" name="Annotation profile for tasker" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
-        <module name="tasker" />
-      </profile>
-      <profile default="false" name="Annotation profile for core" enabled="true">
+      <profile default="false" name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="core" />
+        <module name="tasker" />
+        <module name="web-services" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

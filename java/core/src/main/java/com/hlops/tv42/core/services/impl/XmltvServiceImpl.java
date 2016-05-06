@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.xml.namespace.QName;
@@ -34,7 +35,8 @@ import java.util.zip.GZIPInputStream;
 @Service
 public class XmltvServiceImpl extends GenericServiceImpl<TvShowChannel> implements XmltvService {
 
-    private static final long MAX_AGE = 1000 * 60 * 60 * 24 * 3;
+    @Value("${tv42-tv_item-max_age:259200000}")
+    private long MAX_AGE;
 
     private static Logger log = LogManager.getLogger(XmltvServiceImpl.class);
 
@@ -84,6 +86,9 @@ public class XmltvServiceImpl extends GenericServiceImpl<TvShowChannel> implemen
     }
 
     private void deleteObsoleteItems() {
+        if (MAX_AGE == 0) {
+            return;
+        }
         Set<TvShowChannel> modifiedChannels = new HashSet<>();
         long minimalTime = System.currentTimeMillis() - MAX_AGE;
         for (TvShowChannel channel : getChannels()) {
@@ -120,7 +125,7 @@ public class XmltvServiceImpl extends GenericServiceImpl<TvShowChannel> implemen
         try {
             XMLStreamReader xmlReader = inputFactory.createXMLStreamReader(new InputStreamReader(stream, "UTF-8"));
             try {
-                long minimalTime = System.currentTimeMillis() - MAX_AGE;
+                long minimalTime = MAX_AGE == 0 ? 0 : System.currentTimeMillis() - MAX_AGE;
                 XMLEventReader eventReader = inputFactory.createXMLEventReader(xmlReader);
 
                 QName qNameId = new QName("id");
@@ -235,5 +240,63 @@ public class XmltvServiceImpl extends GenericServiceImpl<TvShowChannel> implemen
             items.addAll(oldValue.getItems(source));
         }
         return value.clone();
+    }
+
+    public void save(Collection<TvShowChannel> channels, @NotNull String source, OutputStream outputStream) throws IOException {
+        XMLOutputFactory factory = XMLOutputFactory.newInstance();
+        try {
+            XMLStreamWriter writer = factory.createXMLStreamWriter(outputStream);
+            writer.writeStartDocument();
+            writer.writeDTD("<!DOCTYPE tv SYSTEM \"http://programtv.ru/xmltv.dtd\">");
+            writer.writeCharacters("\n");
+            writer.writeStartElement("tv");
+            writer.writeCharacters("\n");
+
+            for (TvShowChannel channel : channels) {
+                writer.writeStartElement("channel");
+                writer.writeAttribute("id", channel.getChannelId());
+
+                writer.writeStartElement("display-name");
+                writer.writeCharacters(channel.getName());
+                writer.writeEndElement();
+
+                writer.writeEndElement();
+                writer.writeCharacters("\n");
+            }
+
+            for (TvShowChannel channel : channels) {
+                for (TvShowItem item : channel.getItems(source)) {
+                    writer.writeStartElement("programme");
+                    writer.writeAttribute("start", TimeFormatter.format(item.getStart()));
+                    writer.writeAttribute("stop", TimeFormatter.format(item.getStop()));
+                    writer.writeAttribute("channel", channel.getChannelId());
+
+                    writer.writeStartElement("title");
+                    writer.writeCharacters(item.getTitle());
+                    writer.writeEndElement();
+
+                    if (item.getDescription() != null) {
+                        writer.writeStartElement("desc");
+                        writer.writeCharacters(item.getDescription());
+                        writer.writeEndElement();
+                    }
+
+                    if (item.getCategory() != null) {
+                        writer.writeStartElement("category");
+                        writer.writeCharacters(item.getCategory());
+                        writer.writeEndElement();
+                    }
+
+                    writer.writeEndElement();
+                    writer.writeCharacters("\n");
+                }
+            }
+
+            writer.writeEndElement();
+        } catch (XMLStreamException e) {
+            e.printStackTrace();
+        }
+
+        outputStream.close();
     }
 }

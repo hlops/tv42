@@ -30,4 +30,7 @@ public class TimeFormatter {
         }
     }
 
+    public static String format(long time) {
+        return DATE_FORMAT.format(new Date(time));
+    }
 }

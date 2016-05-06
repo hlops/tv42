@@ -20,7 +20,7 @@ import java.util.List;
  * Created by tom on 1/31/16.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"/test-spring-config.xml"})
+@ContextConfiguration(locations = {"/test-spring-config-no-max-age.xml"})
 public class XmltvServiceImplTest extends Assert {
 
     @Autowired
@@ -57,5 +57,32 @@ public class XmltvServiceImplTest extends Assert {
         assertNotNull(xmltvService.matchByName("2x2(тест!)"));
         assertNotNull(xmltvService.matchByName("2x2 ТВ"));
         assertNotNull(xmltvService.matchByName("2x2+ТВ(1)"));
+    }
+
+    @Test
+    public void testSave() throws Exception {
+
+        //todo
+        try (InputStream inputStream = getClass().getResourceAsStream("/xmltv1.xml");) {
+            Collection<TvShowChannel> channels = xmltvService.load("test", inputStream);
+            xmltvService.actualize(channels);
+        }
+
+        InputStream inputStream = getClass().getResourceAsStream("/xmltv1.xml");
+        xmltvService.save(xmltvService.getChannels(), "test", System.out);
+/*
+        xmltvService.save(xmltvService.getChannels(), new OutputStream() {
+            private int n;
+
+            @Override
+            public void write(int b) throws IOException {
+                assertEquals("File position is " + n, inputStream.read(), b);
+                n++;
+            }
+        });
+
+        assertTrue("File length is different", inputStream.available() == 0);
+*/
+        inputStream.close();
     }
 }

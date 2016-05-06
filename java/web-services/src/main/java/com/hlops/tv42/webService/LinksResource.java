@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import com.hlops.tv42.core.bean.Link;
+import com.hlops.tv42.core.bean.M3uChannel;
 import com.hlops.tv42.core.bean.TvShowChannel;
 import com.hlops.tv42.core.services.LinkService;
 import com.hlops.tv42.core.services.M3uChannelService;
@@ -50,7 +51,10 @@ public class LinksResource {
             // todo: source is null
             LinkVO src = new LinkVO(link, null);
             if (src.getGroup() == null) {
-                src.setGroup(m3uChannelService.getChannelById(link.getM3uChannel()).getGroup());
+                M3uChannel channelById = m3uChannelService.getChannelById(link.getM3uChannel());
+                if (channelById != null) {
+                    src.setGroup(channelById.getGroup());
+                }
             }
             gson.toJson(src, LinkVO.class, jsonWriter);
         }
